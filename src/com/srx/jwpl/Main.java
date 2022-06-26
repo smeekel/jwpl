@@ -31,8 +31,10 @@ public class Main
       parser.addErrorListener(ErrorListener.INSTANCE);
 
       ModuleGen gen = new ModuleGen();
+      gen.addMessageListener(ErrorListener.INSTANCE);
       gen.visit(parser.module());
 
+      ErrorListener.INSTANCE.printMessages();
     }
     catch( Exception e )
     {

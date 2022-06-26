@@ -1,41 +1,99 @@
 package com.srx.jwpl;
 
-import com.srx.jwpl.cgen.ICGenErrorListener;
+import com.srx.jwpl.cgen.EMessageLevel;
+import com.srx.jwpl.cgen.ICGenMessageListener;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
+import org.jetbrains.annotations.NotNull;
 
+import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ErrorListener extends BaseErrorListener implements ICGenErrorListener
+public class ErrorListener extends BaseErrorListener implements ICGenMessageListener
 {
-  public static class Node
-  {
-    private int     line;
-    private int     col;
-    private String  msg;
-
-    public Node()
-    {
-
-    }
-
-    public Node(Recognizer<?,?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e)
-    {
-      this.line = line;
-      this.col  = charPositionInLine;
-      this.msg  = msg;
-    }
-  }
-
   public static final ErrorListener INSTANCE = new ErrorListener();
-  public List<Node> errors = new LinkedList<>();
+  public List<Message>  messages = new LinkedList<>();
 
   @Override
   public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e)
   {
-    //super.syntaxError(recognizer, offendingSymbol, line, charPositionInLine, msg, e);
-    errors.add(new Node(recognizer, offendingSymbol, line, charPositionInLine, msg, e));
+    Message obj = new Message();
+    obj.level = EMessageLevel.ERROR;
+    obj.msg   = msg;
+    obj.line  = line;
+    obj.col   = charPositionInLine;
+    messages.add(obj);
+  }
+
+  @Override
+  public void onMessage(@NotNull Message msg)
+  {
+    /*
+    if( msg.level==EMessageLevel.ICE )
+    {
+      throw new RuntimeException("Internal compiler error: " + msg.msg);
+    }
+    */
+
+    messages.add(msg);
+  }
+
+  protected final static String TERM_RESET    = "\u001B[0m";
+  protected final static String TERM_RED      = "\u001B[31m";
+  protected final static String TERM_YELLOW   = "\u001B[33m";
+  protected final static String TERM_MAGENTA  = "\u001B[35m";
+  protected final static String TERM_GREEN    = "\u001B[32m";
+  protected final static String TERM_RED_BG   = "\u001B[41;1m";
+  
+
+
+  public void printMessages()
+  {
+    int errorCount = 0;
+    int warnCount  = 0;
+
+    for( Message m : messages )
+    {
+      if( m.level==EMessageLevel.ERROR || m.level==EMessageLevel.FATAL || m.level==EMessageLevel.ICE )
+        errorCount++;
+      else if( m.level==EMessageLevel.WARN )
+        warnCount++;
+    }
+
+    StringBuilder sb = new StringBuilder();
+    sb.append("============ \u001b[36mMessages\u001B[0m ============\n");
+
+    for( Message m : messages )
+    {
+      String prefix = levelToPrefix(m.level);
+
+      sb.append(String.format(
+        "[%s%5s%s:%05d]: \u001B[37m%s\u001B[0m\n",
+        prefix,
+        m.getLevelString(),
+        TERM_RESET,
+        m.line,
+        m.msg
+      ));
+    }
+
+    sb.append("==================================\n");
+    sb.append(String.format("> \u001B[36mError(s)\u001B[0m:   %d\n> \u001B[36mWarning(s)\u001B[0m: %d\n", errorCount, warnCount));
+
+    System.out.println(sb);
+  }
+
+  protected String levelToPrefix(EMessageLevel level)
+  {
+    return switch( level )
+    {
+      case INFO   -> TERM_GREEN;
+      case WARN   -> TERM_YELLOW;
+      case ERROR  -> TERM_RED;
+      case FATAL  -> TERM_RED;
+      case ICE    -> TERM_RED_BG;
+    };
   }
 }

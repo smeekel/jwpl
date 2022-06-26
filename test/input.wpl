@@ -1,10 +1,11 @@
-import File, FileStream, Console from "system.io"
-import "system" as System
+import print from "common"
 
-1 + 2 * 3;
-(1 + 2) * 3;
+fn test(a)
+{
+  print(a);
+}
 
-++a++;
-
-a = b = c;
-aa.bb(1,2,3);
+fn test2()
+{
+  // this should fail
+}
