@@ -12,7 +12,11 @@ public class Def
   public String   value;
   public EDefType type;
   public long     flags;
+  public int      index;
 
+  protected int nextVarSlot   = 0;
+  protected int nextConstSlot = 0;
+  protected int nextObjSlot   = 0;
   protected LinkedList<Def> children  = null;
   protected LinkedList<OP>  ops       = null;
   protected HashMap<String, String> aux;
@@ -21,8 +25,9 @@ public class Def
   {
     parent  = null;
     type    = EDefType.NONE;
-    flags   = 0;
+    flags   = DefFlags.NONE;
     value   = null;
+    index   = 0;
   }
 
   public String getAux(@NotNull String key)
@@ -42,6 +47,42 @@ public class Def
     if( children==null ) children = new LinkedList<>();
 
     child.parent = this;
-    children.add(child);
+    children.addLast(child);
+  }
+
+  public Def find_const(String value)
+  {
+    if( children!=null )
+    {
+      for( Def child : children )
+      {
+        if( child.type != EDefType.CONST )
+          continue;
+        if( child.value.equals(value) )
+          return child;
+      }
+    }
+    return null;
+  }
+
+  public int generateVarSlot()
+  {
+    return ++nextVarSlot;
+  }
+
+  public int generateObjSlot()
+  {
+    return ++nextObjSlot;
+  }
+
+  public int generateConstSlot()
+  {
+    return ++nextConstSlot;
+  }
+
+  public void emit(OP op)
+  {
+    if( ops==null ) ops = new LinkedList<>();
+    ops.addLast(op);
   }
 }

@@ -1,44 +1,60 @@
 grammar WPL;
 
-
 module
-  : statement* EOF
+  : classStatement*
   ;
 
-statement
-  : importStatement
-  | blockStatement
-  | expression eoe
-  | emptyStatement
+classDefinition
+  : definitionModifiers (CLASS | FN) IDENT classParameters? classInheritance? classBody
+  ;
+
+classParameters
+  : '(' parameterList? ')'
+  ;
+
+parameterList
+  : parameterList ',' parameterDefinition
+  | parameterDefinition
+  ;
+
+parameterDefinition
+  : CONST? IDENT
+  ;
+
+classInheritance
+  : EXTENDS IDENT
+  ;
+
+classBody
+  : '{' classStatement* '}'
+  ;
+
+oneOrMoreStatements
+  : '{' classStatement* '}'
+  | classStatement
+  ;
+
+classStatement
+  : classDefinition
+  | variableDefinition eos
   | ifStatement
-  | tryStatement
-  | functionDefinition
-  | variableDefinition eoe
-  | classDefinition
-  | switchStatement
   | forStatement
-  | breakStatement eoe
-  | continueStatement eoe
-  | returnStatement eoe
-  | throwStatement eoe
-  ;
-
-throwStatement
-  : THROW expression
-  ;
-
-returnStatement
-  : RETURN expression
+  | tryStatement
+  | returnStatement eos
+  | breakStatement eos
+  | continueStatement eos
+  | throwStatement eos
+  | expression eos
   ;
 
 forStatement
-  : FOR forSetup ';' forCondition ';' forStep statement
+  : FOR forSetup ';' forCondition ';' forStep oneOrMoreStatements
   ;
 
 forSetup
-  : variableDefinition
-  | expression
-  |
+  : VAR IDENT ( '=' expression )?   # ForSetupLocalVar
+  | IDENT '=' expression            # ForSetupAssignment
+  |                                 # ForSetupEmpty
   ;
 
 forCondition
@@ -51,110 +67,81 @@ forStep
   |
   ;
 
-switchStatement
-  : SWITCH expression '{' caseStatements '}'
-  ;
-
-caseStatements
-  : caseStatement* defaultStatement
-  ;
-
-caseStatement
-  : CASE expression ':' statement
-  ;
-
-defaultStatement
-  : DEFAULT ':' statement
-  ;
-
-variableDefinition
-  : VAR   identifier ( '=' expression )?  # MutableVariableDefinition
-  | CONST identifier '=' expression       # ConstVariableDefinition
-  ;
-
-classDefinition
-  : CLASS identifier (EXTENDS identifier)? '{' classElements '}'
-  ;
-
-classElements
-  : classElement*
-  ;
-
-classElement
-  : memberAttribute* functionDefinition       # ClassFunctionDefinition
-  | memberAttribute* variableDefinition eoe   # ClassVariableDefinition
-  ;
-
-memberAttribute
-  : PUBLIC
-  | PRIVATE
-  | PROTECTED
-  | STATIC
-  ;
-
-functionDefinition
-  : FN identifier '(' functionParameters? ')' blockStatement
-  ;
-
-functionParameters
-  : functionParameters ',' identifier
-  | identifier
-  ;
-
 tryStatement
-  : TRY blockStatement catchElement finallyElement?
+  : TRY classBody catchElement finallyElement?
   ;
 
 catchElement
-  : CATCH identifier? blockStatement
+  : CATCH IDENT? classBody
   ;
 
 finallyElement
-  : FINALLY blockStatement
+  : FINALLY classBody
+  ;
+
+returnStatement
+  : RETURN expression
+  ;
+
+throwStatement
+  : THROW expression
   ;
 
 breakStatement
-  : BREAK eoe
+  : BREAK
   ;
 
 continueStatement
-  : CONTINUE eoe
+  : CONTINUE
   ;
 
 ifStatement
-  : IF expression statement (ELSE statement)?
+  : IF expression oneOrMoreStatements (ELSE oneOrMoreStatements)?
   ;
 
-emptyStatement
-  : eoe
+variableDefinition
+  : definitionModifiers (VAR | CONST) IDENT ( '=' expression )?
   ;
 
-eoe
-  : SemiColon
+definitionModifiers
+  : visibility?
   ;
 
-blockStatement
-  : '{' statement* '}'
+visibility
+  : PUBLIC
+  | PRIVATE
+  | PROTECTED
   ;
 
-importStatement
-  : IMPORT identList FROM ConstString   # ImportPartsStatement
-  | IMPORT ConstString AS identifier    # ImportWholeStatement
+callArguments
+  : '(' argumentList? ')'
   ;
 
-identList
-  : identifier (',' identifier)*
+argumentList
+  : argumentList ',' expression
+  | expression
   ;
 
-arguments
-  : '(' (expression (',' expression)*)? ')'
+lambdaExpression
+  : lambdaParameters '=>' lambdaBody
+  ;
+
+lambdaParameters
+  : classParameters
+  | IDENT
+  ;
+
+lambdaBody
+  : classBody
+  | classStatement
   ;
 
 expression
-  : expression '[' expression ']'                     # MemberIndexExpr
-  | expression '.'  identifier                        # MemberAccessorExpr
-  | expression arguments                              # ArgumentExpr
-  | expression '?.' identifier                        # SafeMemberAccessorExpr
+  : lambdaExpression                                  # lambdaExpress
+  | expression '[' expression ']'                     # IndexExpr
+  | expression '.' IDENT                              # MemberAccessExpr
+  | expression '?.' IDENT                             # SafeMemberAccessExpr
+  | expression callArguments                          # CallExpr
   | expression '++'                                   # PostIncrementExpr
   | expression '--'                                   # PostDecrementExpr
   | '++' expression                                   # PreIncrementExpr
@@ -174,26 +161,24 @@ expression
   | expression '&&' expression                        # AndExpr
   | expression '||' expression                        # OrExpr
   | <assoc=right> expression '=' expression           # AssignmentExpr
-  | identifier                                        # IdentifierExpr
-  | literal                                           # LiteralExpr
   | THIS                                              # ThisExpr
   | SUPER                                             # SuperExpr
+  | IDENT                                             # IdentExpr
+  | literal                                           # LiteralExpr
   | '(' expression ')'                                # SubExpr
   ;
 
-identifier
-  : IDENT
+eos
+  : ';'
+  | EOF
   ;
+
 
 literal
   : numericLiteral
   | stringLiteral
   | booleanLiteral
-  | nullLiteral
-  ;
-
-nullLiteral
-  : NONE
+  | NONE
   ;
 
 booleanLiteral
@@ -202,14 +187,18 @@ booleanLiteral
   ;
 
 stringLiteral
-  : '"' ~('"')+ '"'
-  | '\'' ~('\'')+ '\''
+  : QuotedString
   ;
 
 numericLiteral
   : DecimalLiteral
   | HexLiteral
   | BinaryLiteral
+  ;
+
+QuotedString
+  : '"' ~('"')* '"'
+  | '\'' ~('\'')* '\''
   ;
 
 SingleLineComment
@@ -232,14 +221,10 @@ BinaryLiteral
   : '0' [bB] [_0-1]+
   ;
 
-ConstString
-  : '"' ~('"')+ '"'
-  ;
-
-
 OpenBracket   : '[';
 CloseBracket  : ']';
 SemiColon     : ';';
+ArrowOper     : '=>';
 
 BREAK         : 'break';
 CASE          : 'case';

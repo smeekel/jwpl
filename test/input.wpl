@@ -1,11 +1,13 @@
-import print from "common"
 
-fn test(a)
+private fn test(const a)
 {
-  print(a);
-}
+  print("herp derp", a);
 
-fn test2()
-{
-  // this should fail
+  public const b = 1;
+  public var   c;
+
+  class TestInner
+  {
+    public var value;
+  }
 }

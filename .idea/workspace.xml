@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1330452c-7768-48f0-ac20-c1919f877e45" name="Changes" comment="Added error/msg events, def and scope context frameworks. Started to fill out visit functions.">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/antlr_4_10_1_complete.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jwpl.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/EMessageLevel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/def/Scope.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/ErrorListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/ErrorListener.java" afterDir="false" />
+    <list default="true" id="1330452c-7768-48f0-ac20-c1919f877e45" name="Changes" comment="Revamped language, added def printer function, started adding ops and code emitters">
+      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/def/DefPrinter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/WPL.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/WPL.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ICGenErrorListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ICGenMessageListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/TestGen.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/Def.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/def/Def.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/DefFlags.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/def/DefFlags.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/EDefType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/def/EDefType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/EOP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/def/EOP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/OP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/def/OP.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/input.wpl" beforeDir="false" afterPath="$PROJECT_DIR$/test/input.wpl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -28,8 +24,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -69,7 +65,7 @@
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.editor.code.editing"
+    "settings.editor.selected.configurable": "preferences.sourceCode.Java"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -117,7 +113,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656216444529</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Added error/msg events, def and scope context frameworks. Started to fill out visit functions.">
+      <created>1656230247163</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1656230247163</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -134,7 +137,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial commit" />
     <MESSAGE value="Added error/msg events, def and scope context frameworks. Started to fill out visit functions." />
-    <option name="LAST_COMMIT_MESSAGE" value="Added error/msg events, def and scope context frameworks. Started to fill out visit functions." />
+    <MESSAGE value="Revamped language, added def printer function, started adding ops and code emitters" />
+    <option name="LAST_COMMIT_MESSAGE" value="Revamped language, added def printer function, started adding ops and code emitters" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

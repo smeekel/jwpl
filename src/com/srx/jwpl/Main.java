@@ -3,6 +3,7 @@ package com.srx.jwpl;
 import com.srx.jwpl.antlr.WPLLexer;
 import com.srx.jwpl.antlr.WPLParser;
 import com.srx.jwpl.cgen.ModuleGen;
+import com.srx.jwpl.def.DefPrinter;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 
@@ -35,6 +36,7 @@ public class Main
       gen.visit(parser.module());
 
       ErrorListener.INSTANCE.printMessages();
+      DefPrinter.print(gen.getRootDef());
     }
     catch( Exception e )
     {
