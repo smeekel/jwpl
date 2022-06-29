@@ -4,6 +4,7 @@ import com.srx.jwpl.ErrorListener;
 import com.srx.jwpl.antlr.WPLBaseVisitor;
 import com.srx.jwpl.antlr.WPLParser;
 import com.srx.jwpl.def.*;
+import com.srx.jwpl.vm.module.OP;
 
 public class ModuleGen extends WPLBaseVisitor<Object>
 {
@@ -29,7 +30,22 @@ public class ModuleGen extends WPLBaseVisitor<Object>
 
     scope = new Scope();
 
+    addStub("print");
+    addStub("import");
+
     return super.visitModule(ctx);
+  }
+
+  protected void addStub(String name)
+  {
+    Def def = new Def();
+    def.type  = EDefType.CLASS;
+    def.flags = DefFlags.F_EXTERNAL | DefFlags.F_PRIVATE ;
+    def.value = name;
+    def.index = def_root.generateObjSlot();
+
+    def_root.addChild(def);
+    scope.addRoot(def);
   }
 
   @Override
@@ -47,9 +63,10 @@ public class ModuleGen extends WPLBaseVisitor<Object>
 
     classDef = new Def();
     classDef.type   = EDefType.CLASS;
-    classDef.flags  = DefFlags.F_PROTECTED;
+    classDef.flags  = DefFlags.F_PROTECTED | DefFlags.F_CONST ;
     classDef.value  = className;
     classDef.index  = def_root.generateObjSlot();
+    scope.add(classDef);
     defPush(classDef);
 
     super.visitClassDefinition(ctx);
@@ -97,6 +114,7 @@ public class ModuleGen extends WPLBaseVisitor<Object>
     param.value = name;
     param.index = def_active.generateVarSlot();
 
+
     if( ctx.CONST()!=null )
       param.flags |= DefFlags.F_CONST ;
 
@@ -130,8 +148,8 @@ public class ModuleGen extends WPLBaseVisitor<Object>
     if( ctx.CONST()!=null )
       var.flags |= DefFlags.F_CONST;
 
-    defPush(var);
-    defPop();
+    defAdd(var);
+    scope.add(var);
 
     if( ctx.expression()!=null )
     {
@@ -144,6 +162,89 @@ public class ModuleGen extends WPLBaseVisitor<Object>
 
 
   //<editor-fold desc="Expressions">
+
+
+  @Override
+  public Object visitNakedExpression(WPLParser.NakedExpressionContext ctx)
+  {
+    super.visitNakedExpression(ctx);
+
+    emit(EOP.POP);
+
+    return null;
+  }
+
+  @Override
+  public Object visitCallExpr(WPLParser.CallExprContext ctx)
+  {
+    super.visitCallExpr(ctx);
+    int parameterCount = ctx.callArguments().argumentList().expr.size();
+
+    emit(EOP.CALL, parameterCount);
+
+    return null;
+  }
+
+  @Override
+  public Object visitMemberAccessExpr(WPLParser.MemberAccessExprContext ctx)
+  {
+    String  memberName  = ctx.IDENT().getText();
+    int     konst       = defMakeConst(memberName);
+
+    super.visitMemberAccessExpr(ctx);
+
+    emit(EOP.PUSHK, konst);
+    emit(EOP.GET);
+
+
+    return null;
+  }
+
+  @Override
+  public Object visitIdentExpr(WPLParser.IdentExprContext ctx)
+  {
+    String  name  = ctx.IDENT().getText();
+    Def     ref   = scope.findFirst(name);
+
+    if( ref==null )
+    {
+      error(ctx.IDENT().getSymbol().getLine(), "Undefined symbol '%s'", name);
+      return null;
+    }
+
+    if( ref.type==EDefType.CLASS )
+      emit(EOP.PUSHFN, ref.index);
+    else
+      emit(EOP.PUSH, ref.index);
+
+    return null;
+  }
+
+  @Override
+  public Object visitThisExpr(WPLParser.ThisExprContext ctx)
+  {
+    emit(EOP.PUSHTHIS);
+    return null;
+  }
+
+  @Override
+  public Object visitPostIncrementExpr(WPLParser.PostIncrementExprContext ctx)
+  {
+    super.visitPostIncrementExpr(ctx);
+    emit(EOP.INC);
+    return null;
+  }
+
+  @Override
+  public Object visitAdditiveExpr(WPLParser.AdditiveExprContext ctx)
+  {
+    super.visitAdditiveExpr(ctx);
+
+    emit(EOP.ADD);
+
+    return null;
+  }
+
   @Override
   public Object visitNumericLiteral(WPLParser.NumericLiteralContext ctx)
   {
@@ -212,7 +313,7 @@ public class ModuleGen extends WPLBaseVisitor<Object>
 
   protected int defMakeConst(String value)
   {
-    Def konst = def_root.find_const(value);
+    Def konst = def_root.findConst(value);
 
     if( konst==null )
     {

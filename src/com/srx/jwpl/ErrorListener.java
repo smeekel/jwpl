@@ -48,6 +48,15 @@ public class ErrorListener extends BaseErrorListener implements ICGenMessageList
   protected final static String TERM_RED_BG   = "\u001B[41;1m";
   
 
+  public boolean hasErrors()
+  {
+    return messages
+      .stream()
+      .map( msg -> msg.level==EMessageLevel.ERROR ? 1 : 0 )
+      .reduce(0, Integer::sum)
+      != 0
+      ;
+  }
 
   public void printMessages()
   {
@@ -80,7 +89,15 @@ public class ErrorListener extends BaseErrorListener implements ICGenMessageList
     }
 
     sb.append("==================================\n");
-    sb.append(String.format("> \u001B[36mError(s)\u001B[0m:   %d\n> \u001B[36mWarning(s)\u001B[0m: %d\n", errorCount, warnCount));
+    String strErrorCount    = "\u001b[32m0\u001b[0m";
+    String strWarningCount  = strErrorCount;
+
+    if( errorCount>0 )
+      strErrorCount = String.format("\u001b[31m%s\u001b[0m", errorCount);
+    if( warnCount>0 )
+      strWarningCount = String.format("\u001b[33m%s\u001b[0m", warnCount);
+
+    sb.append(String.format("> \u001B[36mError(s)\u001B[0m:   %s\n> \u001B[36mWarning(s)\u001B[0m: %s\n", strErrorCount, strWarningCount));
 
     System.out.println(sb);
   }

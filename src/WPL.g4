@@ -44,7 +44,11 @@ classStatement
   | breakStatement eos
   | continueStatement eos
   | throwStatement eos
-  | expression eos
+  | nakedExpression eos
+  ;
+
+nakedExpression
+  : expression
   ;
 
 forStatement
@@ -118,11 +122,10 @@ callArguments
   ;
 
 argumentList
-  : argumentList ',' expression
-  | expression
+  : expr+=expression ( ',' expr+=expression )*
   ;
 
-lambdaExpression
+lambdaExpression locals [String internalName = null]
   : lambdaParameters '=>' lambdaBody
   ;
 
@@ -160,6 +163,7 @@ expression
   | expression '|' expression                         # BitOrExpr
   | expression '&&' expression                        # AndExpr
   | expression '||' expression                        # OrExpr
+  | expression '??' expression                        # CoalescingExpr
   | <assoc=right> expression '=' expression           # AssignmentExpr
   | THIS                                              # ThisExpr
   | SUPER                                             # SuperExpr
@@ -172,7 +176,6 @@ eos
   : ';'
   | EOF
   ;
-
 
 literal
   : numericLiteral

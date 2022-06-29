@@ -1,6 +1,7 @@
 package com.srx.jwpl.def;
 
 
+import com.srx.jwpl.vm.module.OP;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class Def
     children.addLast(child);
   }
 
-  public Def find_const(String value)
+  public Def findConst(String value)
   {
     if( children!=null )
     {
@@ -84,5 +85,15 @@ public class Def
   {
     if( ops==null ) ops = new LinkedList<>();
     ops.addLast(op);
+  }
+
+  public LinkedList<Def> getChildren()
+  {
+    return children;
+  }
+
+  public boolean isStatic()
+  {
+    return (flags & DefFlags.F_STATIC) != 0 ;
   }
 }

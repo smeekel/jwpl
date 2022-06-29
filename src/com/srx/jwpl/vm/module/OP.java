@@ -1,8 +1,10 @@
-package com.srx.jwpl.def;
+package com.srx.jwpl.vm.module;
+
+import com.srx.jwpl.def.EOP;
 
 public class OP
 {
-  public EOP  op;
+  public EOP op;
   public int a;
   public int b;
   public int c;

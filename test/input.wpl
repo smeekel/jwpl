@@ -1,13 +1,10 @@
 
+var a = 99;
+
 private fn test(const a)
 {
-  print("herp derp", a);
-
-  public const b = 1;
-  public var   c;
-
-  class TestInner
-  {
-    public var value;
-  }
+  //print("herp derp", a+1);
+  this.a++;
 }
+
+test(5);

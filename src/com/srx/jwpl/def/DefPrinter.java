@@ -1,5 +1,7 @@
 package com.srx.jwpl.def;
 
+import com.srx.jwpl.vm.module.OP;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +17,7 @@ public class DefPrinter
     printer.print_def(root, 0);
     printer.sb.append("------------------------------\n");
 
-    System.out.println(printer.toString());
+    System.out.println(printer);
   }
 
   protected void print_def(Def def, int level)
@@ -32,7 +34,6 @@ public class DefPrinter
       case CLASS  -> "CLASS";
       case VAR    -> "..VAR";
       case CONST  -> "CONST";
-      default     -> "???";
     };
 
 
@@ -47,6 +48,8 @@ public class DefPrinter
       flags.add("PRO");
     if( (def.flags & DefFlags.F_PUBLIC)!=0 )
       flags.add("PUB");
+    if( (def.flags & DefFlags.F_EXTERNAL)!=0 )
+      flags.add("EXT");
 
 
     slot = "";
@@ -85,7 +88,8 @@ public class DefPrinter
   {
     final String indent = "  ".repeat(level+1);
 
-    sb.append(indent + "[ OPCODES ]\n");
+    sb.append(indent);
+    sb.append("[ OPCODES ]\n");
     for( OP opcode : def.ops )
     {
       String name = "\u001b[36m" + String.format("%-8s", DefPrinter.opcodeToString(opcode.op)) + "\u001b[0m";
@@ -94,6 +98,9 @@ public class DefPrinter
       {
         case MOV:
         case PUSHK:
+        case PUSH:
+        case PUSHFN:
+        case CALL:
         case RET:
           sb.append(String.format(
             "%s%s %d\n",
@@ -130,11 +137,19 @@ public class DefPrinter
     {
       case NOP      -> "nop";
       case MOV      -> "mov";
+      case PUSH     -> "push";
+      case PUSHFN   -> "pushfn";
       case PUSHK    -> "pushk";
       case PUSHI    -> "pushi";
+      case PUSHTHIS -> "pushthis";
+      case PUSHNULL -> "pushnull";
+      case POP      -> "pop";
       case CASTI    -> "casti";
+      case CALL     -> "call";
       case RET      -> "ret";
-      default       -> "???";
+      case ADD      -> "add";
+      case INC      -> "inc";
+      case GET      -> "get";
     };
   }
 

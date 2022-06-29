@@ -8,6 +8,8 @@ public class DefFlags
   public static final int F_PRIVATE     = 0x0004;
   public static final int F_PARAM       = 0x0008;
   public static final int F_CONST       = 0x0010;
+  public static final int F_EXTERNAL    = 0x0020;
+  public static final int F_STATIC      = 0x0040;
 
   public static final int MASK_VISIBILITY = F_PUBLIC | F_PROTECTED | F_PRIVATE;
 }
