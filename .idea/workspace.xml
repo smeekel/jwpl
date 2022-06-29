@@ -2,24 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1330452c-7768-48f0-ac20-c1919f877e45" name="Changes" comment="- Added new scoping system&#10;- Added initial module baking&#10;- Added initial VM&#10;- Added ICE runtime exception&#10;- Bug fixes to cgen for missing names in scope state&#10;- Added additional color coding to compiler messages&#10;- Added new opcodes&#10;- Change display order def output and compiler messages&#10;- Added initial stack/heap variable structure">
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Baker.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ICEException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Scope.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/VirtualMachine.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EVariableTypes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Flask.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Variable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WPL.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/WPL.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/ErrorListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/ErrorListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/Def.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/def/Def.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/DefFlags.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/def/DefFlags.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/DefPrinter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/def/DefPrinter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/EOP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/def/EOP.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/OP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/OP.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/Scope.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Baker.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Scope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Scope.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/Def.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/DefFlags.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/DefPrinter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/EDefType.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/def/EOP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EOP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Flask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Flask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/OP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/OP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Variable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Variable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/input.wpl" beforeDir="false" afterPath="$PROJECT_DIR$/test/input.wpl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -31,15 +28,15 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="dev-main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -72,7 +69,7 @@
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.sourceCode.Java"
+    "settings.editor.selected.configurable": "fileTemplates"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -137,7 +134,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656310481256</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="- Added new scoping system&#10;- Added initial module baking&#10;- Added initial VM&#10;- Added ICE runtime exception&#10;- Bug fixes to cgen for missing names in scope state&#10;- Added additional color coding to compiler messages&#10;- Added new opcodes&#10;- Change display order def output and compiler messages&#10;- Added initial stack/heap variable structure">
+      <created>1656485879214</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1656485879214</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -157,6 +161,13 @@
     <MESSAGE value="Revamped language, added def printer function, started adding ops and code emitters" />
     <MESSAGE value="- Added new scoping system&#10;- Added initial module baking&#10;- Added initial VM&#10;- Added ICE runtime exception&#10;- Bug fixes to cgen for missing names in scope state&#10;- Added additional color coding to compiler messages&#10;- Added new opcodes&#10;- Change display order def output and compiler messages&#10;- Added initial stack/heap variable structure" />
     <option name="LAST_COMMIT_MESSAGE" value="- Added new scoping system&#10;- Added initial module baking&#10;- Added initial VM&#10;- Added ICE runtime exception&#10;- Bug fixes to cgen for missing names in scope state&#10;- Added additional color coding to compiler messages&#10;- Added new opcodes&#10;- Change display order def output and compiler messages&#10;- Added initial stack/heap variable structure" />
+  </component>
+  <component name="XDebuggerManager">
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="com.srx.jwpl.vm.module.Flask" memberName="members" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

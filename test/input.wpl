@@ -1,10 +1,11 @@
 
-var a = 99;
+var a = () => {
+  var avar = 1;
+};
 
 private fn test(const a)
 {
-  //print("herp derp", a+1);
-  this.a++;
+  this.a();
 }
 
 test(5);

@@ -1,6 +1,6 @@
 package com.srx.jwpl.cgen;
 
-import com.srx.jwpl.def.Def;
+import com.srx.jwpl.vm.module.Variable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -12,16 +12,16 @@ public class Scope
 {
   protected static class Node
   {
-    Def def;
+    Variable var;
     int level;
 
     public Node()
     {
     }
 
-    public Node(@NotNull Def def, int level)
+    public Node(@NotNull Variable var, int level)
     {
-      this.def    = def;
+      this.var    = var;
       this.level  = level;
     }
   }
@@ -44,9 +44,9 @@ public class Scope
 
     }
 
-    public void add(@NotNull Def def, int level)
+    public void add(@NotNull Variable var, int level)
     {
-      nodes.addLast(new Node(def, level));
+      nodes.addLast(new Node(var, level));
     }
 
     public boolean isEmpty()
@@ -59,6 +59,16 @@ public class Scope
   protected HashMap<String, Chain> scopeTree = new HashMap<>();
   protected int level = 0;
 
+
+  public Scope()
+  {
+  }
+
+  public Scope(Variable var)
+  {
+    add(var);
+    push();
+  }
 
   public void push()
   {
@@ -80,50 +90,50 @@ public class Scope
     }
   }
 
-  public void add(@NotNull Def def)
+  public void add(@NotNull Variable var)
   {
-    if( !scopeTree.containsKey(def.value) )
-      scopeTree.put(def.value, new Chain());
+    if( !scopeTree.containsKey(var.name) )
+      scopeTree.put(var.name, new Chain());
 
-    scopeTree.get(def.value).add(def, level);
+    scopeTree.get(var.name).add(var, level);
   }
 
-  public void addRoot(@NotNull Def def)
+  public void addRoot(@NotNull Variable var)
   {
-    if( !scopeTree.containsKey(def.value) )
-      scopeTree.put(def.value, new Chain());
+    if( !scopeTree.containsKey(var.name) )
+      scopeTree.put(var.name, new Chain());
 
-    Chain chain = scopeTree.get(def.value);
+    Chain chain = scopeTree.get(var.name);
     Node  node;
 
     node = chain.nodes.isEmpty() ? null : chain.nodes.getFirst() ;
     if( node!=null && node.level==0 )
-      throw new ICEException("Attempted to add '%s' to root scope chain; slot already occupied", def.value);
+      throw new ICEException("Attempted to add '%s' to root scope chain; slot already occupied", var.name);
 
-    node = new Node(def, 0);
+    node = new Node(var, 0);
     chain.nodes.addFirst(node);
   }
 
-  public Def findImmediate(@NotNull String name)
+  public Variable findImmediate(@NotNull String name)
   {
     Chain chain = scopeTree.get(name);
     if( chain==null ) return null;
 
     Node last = chain.nodes.getLast();
     if( last!=null && last.level==level )
-      return last.def;
+      return last.var;
 
     return null;
   }
 
-  public Def findFirst(@NotNull String name)
+  public Variable findFirst(@NotNull String name)
   {
     Chain chain = scopeTree.get(name);
     if( chain==null ) return null;
 
     Node last = chain.nodes.getLast();
 
-    return last!=null ? last.def : null;
+    return last!=null ? last.var : null;
   }
 
 }

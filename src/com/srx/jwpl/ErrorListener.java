@@ -7,7 +7,6 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.jetbrains.annotations.NotNull;
 
-import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,7 +57,7 @@ public class ErrorListener extends BaseErrorListener implements ICGenMessageList
       ;
   }
 
-  public void printMessages()
+  public void print()
   {
     int errorCount = 0;
     int warnCount  = 0;
@@ -112,5 +111,10 @@ public class ErrorListener extends BaseErrorListener implements ICGenMessageList
       case FATAL  -> TERM_RED;
       case ICE    -> TERM_RED_BG;
     };
+  }
+
+  public void clear()
+  {
+    messages.clear();
   }
 }

@@ -1,18 +1,17 @@
 package com.srx.jwpl.vm.module;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Vector;
 
-public class Flask
+public class Flask extends Variable
 {
-  public String   name;
-  public int      stackSize;
-  public Flask    module;
-  public Flask    parent;
+  public Vector<Variable> members;
+  public Vector<String>   constPool;
 
-  public List<String>           constPool;
-  public List<Variable>         members;
-  public Map<String, Variable>  memberNames;
-  public Map<Integer, Variable> memberIndexes;
+  public Flask()
+  {
+    type    = EVariableTypes.FLASK;
+    members = new Vector<>();
+  }
+
 }

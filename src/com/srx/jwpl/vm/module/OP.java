@@ -1,7 +1,5 @@
 package com.srx.jwpl.vm.module;
 
-import com.srx.jwpl.def.EOP;
-
 public class OP
 {
   public EOP op;
