@@ -14,6 +14,8 @@ public class DefTreePrinter
   {
     DefTreePrinter printer = new DefTreePrinter();
 
+    if( tree==null ) return;
+
     printer.sb.append("-------------- \u001b[36mDEFs\u001B[0m --------------\n");
     printer.print_def(tree.getRoot(), 0);
     printer.sb.append("----------------------------------\n");
@@ -122,14 +124,26 @@ public class DefTreePrinter
       {
         case MOV:
         case PUSH:
-        case PUSHFN:
         case CALL:
+        case PUSHTHIS:
         case RET:
           sb.append(String.format(
             "%s%s %d\n",
             indent,
             name,
             opcode.a
+          ));
+          break;
+
+        case GETTK:
+          sb.append(String.format(
+            "%s%s %d %d ; this(%d)['%s']\n",
+            indent,
+            name,
+            opcode.a,
+            opcode.b,
+            opcode.a,
+            constLookup(def, opcode.b)
           ));
           break;
 

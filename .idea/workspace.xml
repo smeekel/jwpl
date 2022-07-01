@@ -2,21 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1330452c-7768-48f0-ac20-c1919f877e45" name="Changes" comment="Work in progress. Building experimental flat member storage and nested parent access mechanism">
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/DefTreePrinter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/WPL.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/WPL.g4" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/ErrorListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ErrorListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/BaseGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/BaseGenerator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Compiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Compiler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/DefTreePrinter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/DefTreePrinter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Scope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Scope.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/TypeGen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/TypeGen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/VirtualMachine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/VirtualMachine.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EOP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EOP.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Flask.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/VarFlags.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EVarFlags.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Variable.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/test/input.wpl" beforeDir="false" afterPath="$PROJECT_DIR$/test/input.wpl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -69,7 +62,7 @@
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "editor.preferences.folding"
+    "settings.editor.selected.configurable": "preferences.sourceCode.Java"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -148,7 +141,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656534246725</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Work in progress. Building experimental flat member storage and nested parent access mechanism">
+      <created>1656642314967</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1656642314967</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

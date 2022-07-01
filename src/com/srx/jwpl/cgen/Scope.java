@@ -29,7 +29,6 @@ public class Scope
     public Vector<String>       consts;
 
     protected int stackElements;
-    protected int flaskElements;
 
     public Def(EDefTypes type)
     {
@@ -41,17 +40,11 @@ public class Scope
       index         = null;
 
       stackElements = 0;
-      flaskElements = 0;
     }
 
     public int allocStackSlot()
     {
       return stackElements++;
-    }
-
-    public int allocFlaskSlot()
-    {
-      return flaskElements++;
     }
   }
 
@@ -138,5 +131,22 @@ public class Scope
 
     return index;
   }
+
+  public int calculateParentDelta(Def current, Def sub)
+  {
+    int delta = 0;
+
+    while( current!=null )
+    {
+      if( current.children.containsKey(sub.name) )
+        return delta;
+
+      delta++;
+      current = current.parent;
+    }
+
+    return -1;
+  }
+
 
 }

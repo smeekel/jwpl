@@ -5,7 +5,6 @@ public enum EOP
   NOP       (0x00, "nop"),
   MOV       (0x01, "mov"),
   PUSH      (0x02, "push"),
-  PUSHFN    (0x03, "pushfn"),
   PUSHK     (0x04, "pushk"),
   PUSHI     (0x05, "pushi"),
   PUSHTHIS  (0x06, "pushthis"),
@@ -17,6 +16,7 @@ public enum EOP
   ADD       (0x0C, "add"),
   INC       (0x0D, "inc"),
   GET       (0x0E, "get"),
+  GETTK     (0x10, "gettk"),
   ASGN      (0x0F, "asgn"),
   ;
 

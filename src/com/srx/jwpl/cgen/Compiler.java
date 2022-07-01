@@ -65,11 +65,13 @@ public class Compiler
     phase1.addMessageListener(msgListener);
     phase1.visit(tree);
 
-    phase2 = new ModuleGen( phase1.getDefTree() );
-    phase2.addMessageListener(msgListener);
-    phase2.visit(tree);
-    defTree = phase2.getDefTree();
-
+    if( !msgListener.hasErrors() )
+    {
+      phase2 = new ModuleGen(phase1.getDefTree());
+      phase2.addMessageListener(msgListener);
+      phase2.visit(tree);
+      defTree = phase2.getDefTree();
+    }
 
     return null;
   }

@@ -36,15 +36,15 @@ oneOrMoreStatements
 
 classStatement
   : classDefinition
-  | variableDefinition EOS
+  | variableDefinition eos
   | ifStatement
   | forStatement
   | tryStatement
-  | returnStatement EOS
-  | breakStatement EOS
-  | continueStatement EOS
-  | throwStatement EOS
-  | nakedExpression EOS
+  | returnStatement eos
+  | breakStatement eos
+  | continueStatement eos
+  | throwStatement eos
+  | nakedExpression eos
   ;
 
 nakedExpression
@@ -172,7 +172,7 @@ expression
   | '(' expression ')'                                # SubExpr
   ;
 
-EOS
+eos
   : ';'
   | EOF
   ;
@@ -181,7 +181,11 @@ literal
   : numericLiteral
   | stringLiteral
   | booleanLiteral
-  | NONE
+  | noneLiteral
+  ;
+
+noneLiteral
+  : NONE
   ;
 
 booleanLiteral

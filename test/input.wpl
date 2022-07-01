@@ -1,8 +1,24 @@
 
-private var a = (aa) =>
+fn outter(p0)
 {
-  print("herp derp", aa);
-};
+  var var0;
 
+  fn middle(p1)
+  {
+    var var1;
 
-a(5);
+    fn inner(p2)
+    {
+      var p2;
+
+      /*
+      var2 = p2;
+      var1 = p2;
+      var0 = p2;
+      */
+
+      outter.var0 = p2;
+    }
+  }
+}
+

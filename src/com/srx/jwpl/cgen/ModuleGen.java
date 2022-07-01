@@ -23,8 +23,8 @@ public class ModuleGen extends BaseGenerator<Object>
     root.flags.add(EVarFlags.F_PUBLIC);
     root.flags.add(EVarFlags.F_EXPORT);
 
-    addStub("print");
-    addStub("import");
+    //addStub("print");
+    //addStub("import");
 
     super.visitModule(ctx);
 
@@ -41,8 +41,6 @@ public class ModuleGen extends BaseGenerator<Object>
 
     if( def.type != Scope.EDefTypes.FLASK )
       throw new ICEException("Type does not match named scope element '%s':flask", name);
-
-    def.index = def.parent.allocFlaskSlot();
 
     defTree.push(def);
       super.visitClassDefinition(ctx);
@@ -66,16 +64,15 @@ public class ModuleGen extends BaseGenerator<Object>
     if( def.type != Scope.EDefTypes.FLASK )
       throw new ICEException("Type does not match named scope element '%s':flask", name);
 
-    def.index = def.parent.allocFlaskSlot();
-
     defTree.push(def);
       super.visitLambdaExpression(ctx);
       emit(EOP.RET);
     defTree.pop();
 
-    emit(EOP.PUSHFN, def.index);
+    throw new ICEException("Missing lambda branch");
+    //emit(EOP.PUSHFN, def.index);
 
-    return null;
+    //return null;
   }
 
   @Override
@@ -140,12 +137,12 @@ public class ModuleGen extends BaseGenerator<Object>
     //
     // Const flag already captured in phase 1
     //
-    def.index = def.parent.allocStackSlot();
-
     if( ctx.expression()!=null )
     {
+      emit(EOP.GETTK, 0, defTree.emitConst(def.name));
       super.visitVariableDefinition(ctx);
-      emit(EOP.MOV, def.index);
+      emit(EOP.ASGN);
+      emit(EOP.POP);
     }
 
     return null;
@@ -163,7 +160,12 @@ public class ModuleGen extends BaseGenerator<Object>
   public Object visitCallExpr(WPLParser.CallExprContext ctx)
   {
     super.visitCallExpr(ctx);
-    emit(EOP.CALL, ctx.callArguments().argumentList().expr.size());
+
+    int size = 0;
+    if( ctx.callArguments().argumentList()!=null && ctx.callArguments().argumentList().expr!=null )
+      size = ctx.callArguments().argumentList().expr.size();
+
+    emit(EOP.CALL, size);
 
     return null;
   }
@@ -174,6 +176,18 @@ public class ModuleGen extends BaseGenerator<Object>
     super.visitAssignmentExpr(ctx);
 
     emit(EOP.ASGN);
+
+    return null;
+  }
+
+  @Override
+  public Object visitMemberAccessExpr(WPLParser.MemberAccessExprContext ctx)
+  {
+    String name = ctx.IDENT().getText();
+
+    super.visitMemberAccessExpr(ctx);
+    emit(EOP.PUSHK, getDefTree().emitConst(name));
+    emit(EOP.GET);
 
     return null;
   }
@@ -190,21 +204,25 @@ public class ModuleGen extends BaseGenerator<Object>
       return null;
     }
 
-    if( def.type==Scope.EDefTypes.VAR )
+    if( def.type==Scope.EDefTypes.VAR || def.type==Scope.EDefTypes.FLASK )
     {
-      emit(EOP.PUSHTHIS);
-      emit(EOP.PUSHK, defTree.emitConst(def.name));
-      emit(EOP.GET);
+      int delta = defTree.calculateParentDelta(defTree.getActive(), def);
+
+      emit(EOP.GETTK, delta, defTree.emitConst(def.name));
     }
     else if( def.type==Scope.EDefTypes.PARAM )
     {
+      if( def.parent!=defTree.getActive() )
+      {
+        error
+        (
+          ctx.IDENT().getSymbol().getLine(),
+          "Cannot access parameter '%s' out of current scope",
+          name
+        );
+      }
+
       emit(EOP.PUSH, def.index);
-    }
-    else if( def.type==Scope.EDefTypes.FLASK )
-    {
-      emit(EOP.NOP);
-      //emit(EOP.PUSHFN, def.index);
-      //throw new ICEException("Missing branch");
     }
 
     return super.visitIdentExpr(ctx);
@@ -239,4 +257,6 @@ public class ModuleGen extends BaseGenerator<Object>
     emit(EOP.PUSHK, defTree.emitConst(ctx.getText()));
     return null;
   }
+
+
 }

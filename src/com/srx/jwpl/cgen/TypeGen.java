@@ -96,7 +96,7 @@ public class TypeGen extends BaseGenerator<Void>
     if( !defTree.doesNameExistInCurrentScope(name) )
     {
       Scope.Def def = new Scope.Def(Scope.EDefTypes.VAR);
-      def.name  = name;
+      def.name = name;
 
       if( ctx.CONST()!=null )
         def.flags.add(EVarFlags.F_CONST);
