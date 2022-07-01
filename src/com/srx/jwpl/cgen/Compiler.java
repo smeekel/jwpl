@@ -1,11 +1,10 @@
 package com.srx.jwpl.cgen;
 
-import com.srx.jwpl.ErrorListener;
 import com.srx.jwpl.antlr.WPLLexer;
 import com.srx.jwpl.antlr.WPLParser;
-import com.srx.jwpl.vm.module.Flask;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 public class Compiler
 {
   protected ErrorListener msgListener;
+  protected Scope defTree;
 
 
   public Compiler()
@@ -32,22 +32,24 @@ public class Compiler
     return msgListener!=null && !msgListener.hasErrors();
   }
 
-  public Flask compile(String filename) throws IOException
+  public Object compile(String filename) throws IOException
   {
     FileInputStream fin = new FileInputStream(filename);
     return compile(fin);
   }
 
-  public Flask compile(InputStream in) throws IOException
+  public Object compile(InputStream in) throws IOException
   {
     WPLLexer          lexer;
     WPLParser         parser;
     CommonTokenStream tokens;
+    ParseTree         tree;
     TypeGen           phase1;
     ModuleGen         phase2;
 
 
     msgListener.clear();
+    defTree = null;
 
     lexer   = new WPLLexer(CharStreams.fromStream(in, StandardCharsets.UTF_8));
     lexer.removeErrorListeners();
@@ -57,17 +59,23 @@ public class Compiler
     parser  = new WPLParser(tokens);
     parser.removeErrorListeners();
     parser.addErrorListener(msgListener);
+    tree = parser.module();
 
     phase1 = new TypeGen();
     phase1.addMessageListener(msgListener);
-    phase1.visit(parser.module());
+    phase1.visit(tree);
 
-    phase2 = new ModuleGen();
+    phase2 = new ModuleGen( phase1.getDefTree() );
     phase2.addMessageListener(msgListener);
-    phase2.visit(parser.module());
+    phase2.visit(tree);
+    defTree = phase2.getDefTree();
 
-    //return didSucceed() ? phase2.getModule() : null ;
+
     return null;
   }
 
+  public void defDump()
+  {
+    DefTreePrinter.print(defTree);
+  }
 }

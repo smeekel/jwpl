@@ -1,11 +1,8 @@
 
-var a = () => {
-  var avar = 1;
+private var a = (aa) =>
+{
+  print("herp derp", aa);
 };
 
-private fn test(const a)
-{
-  this.a();
-}
 
-test(5);
+a(5);

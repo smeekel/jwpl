@@ -12,6 +12,7 @@ public class Main
       Compiler compiler = new Compiler();
 
       compiler.compile("test/input.wpl");
+      compiler.defDump();
       compiler.getMessages().print();
 
     }

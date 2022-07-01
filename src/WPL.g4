@@ -194,9 +194,9 @@ stringLiteral
   ;
 
 numericLiteral
-  : DecimalLiteral
-  | HexLiteral
-  | BinaryLiteral
+  : DecimalLiteral      # DecimalLiteral
+  | HexLiteral          # HexLiteral
+  | BinaryLiteral       # BinaryLiteral
   ;
 
 QuotedString
@@ -223,11 +223,6 @@ HexLiteral
 BinaryLiteral
   : '0' [bB] [_0-1]+
   ;
-
-OpenBracket   : '[';
-CloseBracket  : ']';
-SemiColon     : ';';
-ArrowOper     : '=>';
 
 BREAK         : 'break';
 CASE          : 'case';

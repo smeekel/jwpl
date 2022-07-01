@@ -1,36 +1,26 @@
 package com.srx.jwpl.cgen;
 
 import com.srx.jwpl.antlr.WPLParser;
-import com.srx.jwpl.vm.module.Flask;
-import com.srx.jwpl.vm.module.VarFlags;
-import com.srx.jwpl.vm.module.Variable;
-import org.jetbrains.annotations.NotNull;
+import com.srx.jwpl.vm.module.EVarFlags;
 
-import java.util.LinkedList;
 import java.util.UUID;
 
 public class TypeGen extends BaseGenerator<Void>
 {
-  protected LinkedList<Flask> stack;
-  protected Flask             active;
-
   public TypeGen()
   {
-    stack   = null;
-    active  = null;
+    defTree = new Scope();
   }
 
-  public Flask getRoot()
+  public Scope getDefTree()
   {
-    return stack.getFirst();
+    return defTree;
   }
 
   @Override
   public Void visitModule(WPLParser.ModuleContext ctx)
   {
-    stack   = new LinkedList<>();
-    active  = new Flask();
-    stack.push(active);
+    defTree.getRoot().name = "$module";
 
     super.visitModule(ctx);
     return null;
@@ -41,15 +31,14 @@ public class TypeGen extends BaseGenerator<Void>
   {
     String name = ctx.IDENT().getText();
 
-    if( !doesNameExistInCurrentScope(name) )
+    if( !defTree.doesNameExistInCurrentScope(name) )
     {
-      Flask flask = new Flask();
-      flask.name  = name;
-      active.members.add(flask);
+      Scope.Def def = new Scope.Def(Scope.EDefTypes.FLASK);
+      def.name  = name;
 
-      push(flask);
+      defTree.push(def);
       super.visitClassDefinition(ctx);
-      pop();
+      defTree.pop();
     }
     else
     {
@@ -59,7 +48,13 @@ public class TypeGen extends BaseGenerator<Void>
         "Flask definition: name '%s' already exists in current scope",
         name
       );
-      super.visitClassDefinition(ctx);
+
+      //
+      // Need to push a fake Def in order to continue the parse at this point.
+      // Without it, all the subsequent defs would end up in the parent def and
+      // cause additional incorrect error messages.
+      //
+      //super.visitClassDefinition(ctx);
     }
 
     return null;
@@ -70,12 +65,15 @@ public class TypeGen extends BaseGenerator<Void>
   {
     String name = ctx.IDENT().getText();
 
-    if( !doesNameExistInCurrentScope(name)  )
+    if( !defTree.doesNameExistInCurrentScope(name)  )
     {
-      Variable var = new Variable();
-      var.name = name;
-      var.flags.add(VarFlags.F_PARAM);
-      active.members.add(var);
+      Scope.Def def = new Scope.Def(Scope.EDefTypes.PARAM);
+      def.name  = name;
+
+      if( ctx.CONST()!=null )
+        def.flags.add(EVarFlags.F_CONST);
+
+      defTree.add(def);
     }
     else
     {
@@ -95,17 +93,15 @@ public class TypeGen extends BaseGenerator<Void>
   {
     String name = ctx.IDENT().getText();
 
-    if( !doesNameExistInCurrentScope(name) )
+    if( !defTree.doesNameExistInCurrentScope(name) )
     {
-      Variable var = new Variable();
-      var.name = name;
+      Scope.Def def = new Scope.Def(Scope.EDefTypes.VAR);
+      def.name  = name;
 
       if( ctx.CONST()!=null )
-        var.flags.add(VarFlags.F_CONST);
+        def.flags.add(EVarFlags.F_CONST);
 
-      active.members.add(var);
-
-      super.visitVariableDefinition(ctx);
+      defTree.add(def);
     }
     else
     {
@@ -117,6 +113,7 @@ public class TypeGen extends BaseGenerator<Void>
       );
     }
 
+    super.visitVariableDefinition(ctx);
     return null;
   }
 
@@ -124,40 +121,18 @@ public class TypeGen extends BaseGenerator<Void>
   public Void visitLambdaExpression(WPLParser.LambdaExpressionContext ctx)
   {
     UUID uuid = UUID.randomUUID();
-    ctx.internalName = "$" + uuid.toString();
+    ctx.internalName = "$" + uuid;
 
-    Flask flask = new Flask();
-    flask.name = ctx.internalName;
-    active.members.add(flask);
+    Scope.Def def = new Scope.Def(Scope.EDefTypes.FLASK);
+    def.name = ctx.internalName;
 
-    push(flask);
+    defTree.push(def);
     super.visitLambdaExpression(ctx);
-    pop();
+    defTree.pop();
 
     return null;
   }
 
 
-  protected boolean doesNameExistInCurrentScope(@NotNull String name)
-  {
-    for( Variable var : active.members )
-    {
-      if( var.name!=null && var.name.equals(name) )
-        return true;
-    }
-    return false;
-  }
-
-  protected void push(Flask flask)
-  {
-    stack.push(flask);
-    active = flask;
-  }
-
-  protected void pop()
-  {
-    stack.pop();
-    active = stack.getFirst();
-  }
 
 }

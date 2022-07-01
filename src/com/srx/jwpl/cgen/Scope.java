@@ -1,139 +1,142 @@
 package com.srx.jwpl.cgen;
 
-import com.srx.jwpl.vm.module.Variable;
-import org.jetbrains.annotations.NotNull;
+import com.srx.jwpl.vm.module.EVarFlags;
+import com.srx.jwpl.vm.module.OP;
 
+import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.Vector;
 
 public class Scope
 {
-  protected static class Node
+  public enum EDefTypes
   {
-    Variable var;
-    int level;
+    FLASK,
+    VAR,
+    PARAM
+  }
 
-    public Node()
+  public static class Def
+  {
+    public boolean              inTree;
+    public Def                  parent;
+    public String               name;
+    public Integer              index;
+    public EDefTypes            type;
+    public EnumSet<EVarFlags>   flags;
+    public HashMap<String, Def> children;
+    public Vector<OP>           ops;
+    public Vector<String>       consts;
+
+    protected int stackElements;
+    protected int flaskElements;
+
+    public Def(EDefTypes type)
     {
+      this.type     = type;
+      children      = new HashMap<>();
+      ops           = new Vector<>();
+      flags         = EVarFlags.none();
+      inTree        = false;
+      index         = null;
+
+      stackElements = 0;
+      flaskElements = 0;
     }
 
-    public Node(@NotNull Variable var, int level)
+    public int allocStackSlot()
     {
-      this.var    = var;
-      this.level  = level;
+      return stackElements++;
+    }
+
+    public int allocFlaskSlot()
+    {
+      return flaskElements++;
     }
   }
 
-  protected static class Chain
-  {
-    public LinkedList<Node> nodes = new LinkedList<>();
-
-    public void remove(int maxLevel)
-    {
-      Iterator<Node> iterator = nodes.descendingIterator();
-      while( iterator.hasNext() )
-      {
-        Node node = iterator.next();
-        if( node.level>maxLevel )
-          iterator.remove();
-        if( node.level<=maxLevel )
-          break;
-      }
-
-    }
-
-    public void add(@NotNull Variable var, int level)
-    {
-      nodes.addLast(new Node(var, level));
-    }
-
-    public boolean isEmpty()
-    {
-      return nodes.isEmpty();
-    }
-
-  }
-
-  protected HashMap<String, Chain> scopeTree = new HashMap<>();
-  protected int level = 0;
-
+  protected Def root;
+  protected Def active;
 
   public Scope()
   {
+    root    = new Def(EDefTypes.FLASK);
+    active  = root;
+    root.consts = new Vector<>();
   }
 
-  public Scope(Variable var)
+  public Def getRoot()
   {
-    add(var);
-    push();
+    return root;
   }
 
-  public void push()
+  public Def getActive()
   {
-    level++;
+    return active;
   }
 
-  public void pop()
+  public boolean doesNameExistInCurrentScope(String name)
   {
-    assert level > 0 ;
-    level--;
+    return active.children.containsKey(name);
+  }
 
-    Iterator<Map.Entry<String, Chain>> iterator = scopeTree.entrySet().iterator();
-    while( iterator.hasNext() )
+  public Def findLocal(String name)
+  {
+    return active.children.get(name);
+  }
+
+  public Def findFirst(String name)
+  {
+    Def outter = active;
+
+    while( outter!=null )
     {
-      Map.Entry<String, Chain> entry = iterator.next();
-      entry.getValue().remove(level);
-      if( entry.getValue().isEmpty() )
-        iterator.remove();
+      Def def = outter.children.get(name);
+      if( def!=null )
+        return def;
+
+      outter = outter.parent;
     }
-  }
-
-  public void add(@NotNull Variable var)
-  {
-    if( !scopeTree.containsKey(var.name) )
-      scopeTree.put(var.name, new Chain());
-
-    scopeTree.get(var.name).add(var, level);
-  }
-
-  public void addRoot(@NotNull Variable var)
-  {
-    if( !scopeTree.containsKey(var.name) )
-      scopeTree.put(var.name, new Chain());
-
-    Chain chain = scopeTree.get(var.name);
-    Node  node;
-
-    node = chain.nodes.isEmpty() ? null : chain.nodes.getFirst() ;
-    if( node!=null && node.level==0 )
-      throw new ICEException("Attempted to add '%s' to root scope chain; slot already occupied", var.name);
-
-    node = new Node(var, 0);
-    chain.nodes.addFirst(node);
-  }
-
-  public Variable findImmediate(@NotNull String name)
-  {
-    Chain chain = scopeTree.get(name);
-    if( chain==null ) return null;
-
-    Node last = chain.nodes.getLast();
-    if( last!=null && last.level==level )
-      return last.var;
 
     return null;
   }
 
-  public Variable findFirst(@NotNull String name)
+  public void add(Def def)
   {
-    Chain chain = scopeTree.get(name);
-    if( chain==null ) return null;
+    active.children.put(def.name, def);
+    def.parent  = active;
+    def.inTree  = true;
+  }
 
-    Node last = chain.nodes.getLast();
+  public void addRoot(Def def)
+  {
+    root.children.put(def.name, def);
+    def.parent  = root;
+    def.inTree  = true;
+  }
 
-    return last!=null ? last.var : null;
+  public void push(Def def)
+  {
+    if( !def.inTree ) add(def);
+    active = def;
+  }
+
+  public void pop()
+  {
+    active = active.parent;
+  }
+
+  public int emitConst(String value)
+  {
+    int index;
+
+    index = root.consts.indexOf(value);
+    if( index != -1 ) return index;
+
+    index = root.consts.size();
+    root.consts.add(value);
+
+    return index;
   }
 
 }

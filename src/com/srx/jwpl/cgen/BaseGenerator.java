@@ -1,11 +1,15 @@
 package com.srx.jwpl.cgen;
 
-import com.srx.jwpl.ErrorListener;
 import com.srx.jwpl.antlr.WPLBaseVisitor;
+import com.srx.jwpl.vm.module.EOP;
+import com.srx.jwpl.vm.module.OP;
+
+import static com.srx.jwpl.vm.module.EVarFlags.F_EXTERN;
 
 public abstract class BaseGenerator<T> extends WPLBaseVisitor<T>
 {
   protected ErrorListener msgListener;
+  protected Scope         defTree;
 
   public void addMessageListener(ErrorListener msgListener)
   {
@@ -34,4 +38,20 @@ public abstract class BaseGenerator<T> extends WPLBaseVisitor<T>
   {
     emitMessage(EMessageLevel.WARN, String.format(format, args), line, 0);
   }
+
+  protected void emit(EOP opcode, Integer... values)
+  {
+    assert defTree.getActive().type == Scope.EDefTypes.FLASK ;
+
+    defTree.getActive().ops.add(new OP(opcode, values));
+  }
+
+  protected void addStub(String name)
+  {
+    Scope.Def def = new Scope.Def(Scope.EDefTypes.FLASK);
+    def.name = name;
+    def.flags.add(F_EXTERN);
+    defTree.addRoot(def);
+  }
+
 }

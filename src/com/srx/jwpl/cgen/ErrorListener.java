@@ -1,7 +1,5 @@
-package com.srx.jwpl;
+package com.srx.jwpl.cgen;
 
-import com.srx.jwpl.cgen.EMessageLevel;
-import com.srx.jwpl.cgen.ICGenMessageListener;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -87,7 +85,9 @@ public class ErrorListener extends BaseErrorListener implements ICGenMessageList
       ));
     }
 
-    sb.append("==================================\n");
+    if( errorCount>0 || warnCount>0 )
+      sb.append("==================================\n");
+
     String strErrorCount    = "\u001b[32m0\u001b[0m";
     String strWarningCount  = strErrorCount;
 

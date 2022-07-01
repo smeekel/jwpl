@@ -17,9 +17,10 @@ public enum EOP
   ADD       (0x0C, "add"),
   INC       (0x0D, "inc"),
   GET       (0x0E, "get"),
+  ASGN      (0x0F, "asgn"),
   ;
 
-  public final int id;
+  public final int    id;
   public final String mnemonic;
 
   EOP(int id, String mnemonic)
