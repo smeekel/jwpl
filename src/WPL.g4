@@ -173,8 +173,7 @@ expression
   ;
 
 eos
-  : ';'
-  | EOF
+  : SEMICOLON
   ;
 
 literal
@@ -227,6 +226,8 @@ HexLiteral
 BinaryLiteral
   : '0' [bB] [_0-1]+
   ;
+
+SEMICOLON     : ';';
 
 BREAK         : 'break';
 CASE          : 'case';

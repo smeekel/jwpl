@@ -1,24 +1,17 @@
 
-fn outter(p0)
+fn outter(p0, p1)
 {
-  var var0;
+  print("outter:", p0, p1);
+  middle(p1, p0);
 
-  fn middle(p1)
+  fn middle(mp1, mp2)
   {
-    var var1;
-
-    fn inner(p2)
-    {
-      var p2;
-
-      /*
-      var2 = p2;
-      var1 = p2;
-      var0 = p2;
-      */
-
-      outter.var0 = p2;
-    }
+    print("middle:", mp1, mp2);
   }
 }
+
+
+outter("herp", "derp");
+outter.middle("aa", "bb");
+
 

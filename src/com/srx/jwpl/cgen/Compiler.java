@@ -2,6 +2,7 @@ package com.srx.jwpl.cgen;
 
 import com.srx.jwpl.antlr.WPLLexer;
 import com.srx.jwpl.antlr.WPLParser;
+import com.srx.jwpl.vm.module.Flask;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -32,13 +33,13 @@ public class Compiler
     return msgListener!=null && !msgListener.hasErrors();
   }
 
-  public Object compile(String filename) throws IOException
+  public Flask compile(String filename) throws IOException
   {
     FileInputStream fin = new FileInputStream(filename);
     return compile(fin);
   }
 
-  public Object compile(InputStream in) throws IOException
+  public Flask compile(InputStream in) throws IOException
   {
     WPLLexer          lexer;
     WPLParser         parser;
@@ -65,15 +66,17 @@ public class Compiler
     phase1.addMessageListener(msgListener);
     phase1.visit(tree);
 
-    if( !msgListener.hasErrors() )
-    {
-      phase2 = new ModuleGen(phase1.getDefTree());
-      phase2.addMessageListener(msgListener);
-      phase2.visit(tree);
-      defTree = phase2.getDefTree();
-    }
+    if( msgListener.hasErrors() ) return null;
+    phase2 = new ModuleGen(phase1.getDefTree());
+    phase2.addMessageListener(msgListener);
+    phase2.visit(tree);
+    defTree = phase2.getDefTree();
 
-    return null;
+
+    if( msgListener.hasErrors() ) return null;
+    Flask module = Baker.bake(defTree);
+
+    return module;
   }
 
   public void defDump()

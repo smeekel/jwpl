@@ -44,7 +44,7 @@ public class Scope
 
     public int allocStackSlot()
     {
-      return stackElements++;
+      return -(++stackElements);
     }
   }
 
@@ -67,6 +67,8 @@ public class Scope
   {
     return active;
   }
+
+
 
   public boolean doesNameExistInCurrentScope(String name)
   {

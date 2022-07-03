@@ -1,6 +1,8 @@
 package com.srx.jwpl;
 
 import com.srx.jwpl.cgen.Compiler;
+import com.srx.jwpl.vm.VirtualMachine;
+import com.srx.jwpl.vm.module.Flask;
 
 
 public class Main
@@ -10,16 +12,24 @@ public class Main
     try
     {
       Compiler compiler = new Compiler();
+      Flask flask;
 
-      compiler.compile("test/input.wpl");
+      flask = compiler.compile("test/input.wpl");
       compiler.defDump();
       compiler.getMessages().print();
 
+      if( !compiler.getMessages().hasErrors() )
+      {
+        VirtualMachine vm = new VirtualMachine();
+        vm.addExec(flask);
+        System.out.print("\n");
+      }
     }
     catch( Exception e )
     {
       e.printStackTrace();
     }
+
   }
 
 }

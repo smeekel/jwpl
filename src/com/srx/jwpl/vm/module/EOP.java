@@ -16,8 +16,9 @@ public enum EOP
   ADD       (0x0C, "add"),
   INC       (0x0D, "inc"),
   GET       (0x0E, "get"),
-  GETTK     (0x10, "gettk"),
   ASGN      (0x0F, "asgn"),
+  GETTK     (0x10, "gettk"),
+  PUT       (0x11, "put"),
   ;
 
   public final int    id;

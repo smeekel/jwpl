@@ -4,7 +4,7 @@ import com.srx.jwpl.antlr.WPLBaseVisitor;
 import com.srx.jwpl.vm.module.EOP;
 import com.srx.jwpl.vm.module.OP;
 
-import static com.srx.jwpl.vm.module.EVarFlags.F_EXTERN;
+import static com.srx.jwpl.vm.module.EVarFlags.F_GLOBAL;
 
 public abstract class BaseGenerator<T> extends WPLBaseVisitor<T>
 {
@@ -50,7 +50,7 @@ public abstract class BaseGenerator<T> extends WPLBaseVisitor<T>
   {
     Scope.Def def = new Scope.Def(Scope.EDefTypes.FLASK);
     def.name = name;
-    def.flags.add(F_EXTERN);
+    def.flags.add(F_GLOBAL);
     defTree.addRoot(def);
   }
 

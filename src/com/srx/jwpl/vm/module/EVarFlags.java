@@ -10,7 +10,7 @@ public enum EVarFlags
   F_STATIC,
   F_CONST,
   F_EXPORT,
-  F_EXTERN,
+  F_GLOBAL,
   ;
 
   public static EnumSet<EVarFlags> none()

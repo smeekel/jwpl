@@ -48,8 +48,11 @@ public class DefTreePrinter
       flags.add("PRO");
     if( def.flags.contains(EVarFlags.F_PUBLIC) )
       flags.add("PUB");
+    if( def.flags.contains(EVarFlags.F_GLOBAL) )
+      flags.add("GLOBAL");
     if( def.flags.contains(EVarFlags.F_STATIC) )
       flags.add("+");
+
 
 
     slot = "";
@@ -124,7 +127,6 @@ public class DefTreePrinter
       {
         case MOV:
         case PUSH:
-        case CALL:
         case PUSHTHIS:
         case RET:
           sb.append(String.format(
@@ -135,7 +137,21 @@ public class DefTreePrinter
           ));
           break;
 
+        case CALL:
+          sb.append(String.format(
+            "%s%s %d %d\n",
+            indent,
+            name,
+            opcode.a,
+            opcode.b
+          ));
+          break;
+
         case GETTK:
+        {
+          String value = constLookup(def, opcode.b);
+          value = value.replace("\n", "\\n");
+
           sb.append(String.format(
             "%s%s %d %d ; this(%d)['%s']\n",
             indent,
@@ -143,19 +159,25 @@ public class DefTreePrinter
             opcode.a,
             opcode.b,
             opcode.a,
-            constLookup(def, opcode.b)
+            value
           ));
           break;
+        }
 
         case PUSHK:
+        {
+          String value = constLookup(def, opcode.a);
+          value = value.replace("\n", "\\n");
+
           sb.append(String.format(
             "%s%s %d ; '%s'\n",
             indent,
             name,
             opcode.a,
-            constLookup(def, opcode.a)
+            value
           ));
           break;
+        }
 
         case PUSHI:
           sb.append(String.format(

@@ -3,6 +3,7 @@ package com.srx.jwpl.cgen;
 import com.srx.jwpl.antlr.WPLParser;
 import com.srx.jwpl.vm.module.EOP;
 import com.srx.jwpl.vm.module.EVarFlags;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 public class ModuleGen extends BaseGenerator<Object>
 {
@@ -23,8 +24,8 @@ public class ModuleGen extends BaseGenerator<Object>
     root.flags.add(EVarFlags.F_PUBLIC);
     root.flags.add(EVarFlags.F_EXPORT);
 
-    //addStub("print");
-    //addStub("import");
+    addStub("print");
+    addStub("import");
 
     super.visitModule(ctx);
 
@@ -165,7 +166,7 @@ public class ModuleGen extends BaseGenerator<Object>
     if( ctx.callArguments().argumentList()!=null && ctx.callArguments().argumentList().expr!=null )
       size = ctx.callArguments().argumentList().expr.size();
 
-    emit(EOP.CALL, size);
+    emit(EOP.CALL, size, 1);
 
     return null;
   }
@@ -173,9 +174,24 @@ public class ModuleGen extends BaseGenerator<Object>
   @Override
   public Object visitAssignmentExpr(WPLParser.AssignmentExprContext ctx)
   {
-    super.visitAssignmentExpr(ctx);
+    boolean memberAssign = ctx.getChild(0).getClass().isAssignableFrom(WPLParser.MemberAccessExprContext.class);
 
-    emit(EOP.ASGN);
+    if( memberAssign )
+    {
+      ParseTree memberAccessExpr = ctx.getChild(0);
+
+      this.visit(memberAccessExpr.getChild(0));
+
+      emit(EOP.PUSHK, getDefTree().emitConst(memberAccessExpr.getChild(2).getText()));
+
+      this.visit(ctx.getChild(2));
+      emit(EOP.PUT);
+    }
+    else
+    {
+      super.visitAssignmentExpr(ctx);
+      emit(EOP.ASGN);
+    }
 
     return null;
   }
@@ -254,9 +270,26 @@ public class ModuleGen extends BaseGenerator<Object>
   @Override
   public Object visitStringLiteral(WPLParser.StringLiteralContext ctx)
   {
-    emit(EOP.PUSHK, defTree.emitConst(ctx.getText()));
+    String value = ctx.getText();
+
+    value = value.substring(1, value.length()-1);
+    value = value.replace("\\n", "\n");
+
+    emit(EOP.PUSHK, defTree.emitConst(value));
     return null;
   }
 
+  @Override
+  public Object visitNoneLiteral(WPLParser.NoneLiteralContext ctx)
+  {
+    emit(EOP.PUSHNULL);
+    return null;
+  }
 
+  @Override
+  public Object visitThisExpr(WPLParser.ThisExprContext ctx)
+  {
+    emit(EOP.PUSHTHIS);
+    return super.visitThisExpr(ctx);
+  }
 }
