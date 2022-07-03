@@ -188,6 +188,24 @@ public class DefTreePrinter
           ));
           break;
 
+        case B:
+        case BF:
+          sb.append(String.format(
+            "%s%s l%d\n",
+            indent,
+            name,
+            ((OP)opcode.aux).a
+          ));
+          break;
+
+        case LABEL:
+          sb.append(String.format(
+            "%s:l%d\n",
+            indent,
+            opcode.a
+          ));
+          break;
+
         default:
           sb.append(String.format(
             "%s%s\n",

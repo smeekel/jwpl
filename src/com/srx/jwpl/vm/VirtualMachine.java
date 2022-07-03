@@ -70,7 +70,7 @@ public class VirtualMachine
 
       switch( op.op )
       {
-        case NOP      -> opNOP(op);
+        case NOP, LABEL -> opNOP(op);
         case GETTK    -> opGETTK(op);
         case PUSHK    -> opPUSHK(op);
         case POP      -> opPOP(op);
@@ -80,15 +80,69 @@ public class VirtualMachine
         case PUSHTHIS -> opPUSHTHIS(op);
         case PUT      -> opPUT(op);
         case GET      -> opGET(op);
+        case SGET     -> opSGET(op);
         case CALL     -> opCALL(op);
         case PUSH     -> opPUSH(op);
+        case PUSHNULL -> opPUSHNULL(op);
+        case COAL     -> opCOAL(op);
+        case B        -> opB(op);
+        case BF       -> opBF(op);
         default -> throw new RuntimeException(String.format("Missing opcode support: %s", op.op.mnemonic));
       }
 
-      if( op.op==EOP.CALL || op.op==EOP.RET )
-        cstate = callStack.size()>0 ? callStack.getFirst() : null ;
+      if( (op.op==EOP.CALL || op.op==EOP.RET) && callStack.size()>0 )
+        cstate = callStack.getFirst();
+    }
+  }
 
+  private void opBF(OP op)
+  {
+    boolean cond = varToBoolean(stack.get(0));
 
+    stack.pop();
+    if( !cond ) opB(op);
+  }
+
+  private void opB(OP op)
+  {
+    callStack.getFirst().ip += (op.a - 1);
+  }
+
+  private void opCOAL(OP op)
+  {
+    if( stack.get(1).type == EVariableTypes.NONE && stack.get(0).type != EVariableTypes.NONE )
+    {
+      stack.set(1, stack.get(0));
+    }
+
+    stack.pop();
+  }
+
+  private void opPUSHNULL(OP op)
+  {
+    stack.push(Variable.none());
+  }
+
+  private void opSGET(OP op)
+  {
+    Variable  srcName     = stack.get(0);
+    Variable  srcFlask    = stack.get(1);
+    String    srcNameStr;
+    Flask     flask;
+
+    srcNameStr = varToString(srcName);
+
+    if( srcFlask.value!=null && srcFlask.value.getClass().isAssignableFrom(Flask.class) )
+    {
+      flask = (Flask) srcFlask.value;
+
+      stack.pop();
+      stack.set(0, flask.members.get(srcNameStr));
+    }
+    else
+    {
+      stack.pop();
+      stack.set(0, Variable.none());
     }
   }
 
@@ -108,8 +162,12 @@ public class VirtualMachine
     String    srcNameStr;
     Flask     flask;
 
-    flask       = (Flask)srcFlask.value;
-    srcNameStr  = varToString(srcName);
+    srcNameStr = varToString(srcName);
+
+    if( !srcFlask.value.getClass().isAssignableFrom(Flask.class) )
+      throw new RuntimeException(String.format("No such member: %s", srcNameStr));
+
+    flask = (Flask)srcFlask.value;
 
     stack.pop();
     stack.set(0, flask.members.get(srcNameStr));
@@ -164,12 +222,31 @@ public class VirtualMachine
     if( callStack.size()>0 )
     {
       stack.leave();
-      for( int i = 0; i < 1 + me.cvals; i++ )
-        stack.pop();
-      for( int i = 0; i < me.rvals; i++ )
-        push(null);
-    }
 
+      int total       = me.cvals + op.a + 1;
+      int firstSlot   = total - 1;
+
+
+      System.out.printf("> total slots %d\n", total);
+      for( int i=0 ; i<total ; i++ )
+      {
+        if( i==0 && me.rvals>0 )
+        {
+          Variable var;
+
+          if( op.a>0 )
+            var = stack.get(op.a - 1 - i);
+          else
+            var = Variable.none();
+
+          stack.set(firstSlot - i, var);
+        }
+        else
+        {
+          stack.pop();
+        }
+      }
+    }
   }
 
   private void opCALL(OP op)
@@ -230,7 +307,7 @@ public class VirtualMachine
   {
     if( var==null )
     {
-      stack.push(new Variable(EVariableTypes.NONE));
+      stack.push(Variable.none());
     }
     else if( var.type==EVariableTypes.FLASK )
     {
@@ -268,6 +345,19 @@ public class VirtualMachine
       case FLASK    -> String.format("<Flask %s>", ((Flask)var.value).name);
       case REF      -> "<REF>";
     };
+  }
+
+  public static boolean varToBoolean(Variable var)
+  {
+    return switch( var.type )
+      {
+        case NONE     -> false;
+        case INT      -> ((Integer)var.value) != 0;
+        case FLOAT    -> ((Float)var.value) != 0.0f;
+        case STRING   -> !var.value.toString().isEmpty();
+        case BOOLEAN  -> ((Boolean)var.value);
+        case FLASK, REF -> true;
+      };
   }
 
 }

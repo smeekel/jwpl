@@ -10,6 +10,7 @@ public abstract class BaseGenerator<T> extends WPLBaseVisitor<T>
 {
   protected ErrorListener msgListener;
   protected Scope         defTree;
+  protected int           labelIndex;
 
   public void addMessageListener(ErrorListener msgListener)
   {
@@ -39,11 +40,29 @@ public abstract class BaseGenerator<T> extends WPLBaseVisitor<T>
     emitMessage(EMessageLevel.WARN, String.format(format, args), line, 0);
   }
 
-  protected void emit(EOP opcode, Integer... values)
+  protected OP emit(EOP opcode, Integer... values)
   {
     assert defTree.getActive().type == Scope.EDefTypes.FLASK ;
 
-    defTree.getActive().ops.add(new OP(opcode, values));
+    OP v = new OP(opcode, values);
+    defTree.getActive().ops.add(v);
+
+    return v;
+  }
+
+  protected OP genLabel()
+  {
+    OP label = new OP(EOP.LABEL, ++labelIndex);
+    return label;
+  }
+
+  protected OP emit(OP opcode)
+  {
+    assert defTree.getActive().type == Scope.EDefTypes.FLASK ;
+
+    defTree.getActive().ops.add(opcode);
+
+    return opcode;
   }
 
   protected void addStub(String name)

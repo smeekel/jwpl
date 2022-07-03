@@ -22,8 +22,8 @@ public class Main
       {
         VirtualMachine vm = new VirtualMachine();
         vm.addExec(flask);
-        System.out.print("\n");
       }
+      System.out.print("\n");
     }
     catch( Exception e )
     {

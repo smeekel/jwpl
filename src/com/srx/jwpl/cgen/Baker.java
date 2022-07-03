@@ -1,9 +1,6 @@
 package com.srx.jwpl.cgen;
 
-import com.srx.jwpl.vm.module.EVarFlags;
-import com.srx.jwpl.vm.module.EVariableTypes;
-import com.srx.jwpl.vm.module.Flask;
-import com.srx.jwpl.vm.module.Variable;
+import com.srx.jwpl.vm.module.*;
 
 import java.util.Map;
 import java.util.Vector;
@@ -38,7 +35,7 @@ public class Baker
     if( context.consts!=null )
       flask.consts = new Vector<>(context.consts);
     if( context.ops!=null )
-      flask.ops = new Vector<>(context.ops);
+      flask.ops = bakeOpcodes(context.ops);
 
 
     for( Map.Entry<String, Scope.Def> set : context.children.entrySet() )
@@ -67,8 +64,27 @@ public class Baker
       }
     }
 
-
     return flask;
   }
+
+  private Vector<OP> bakeOpcodes(Vector<OP> src)
+  {
+    Vector<OP> out = new Vector<>(src);
+
+    for( OP op : out )
+    {
+      if( op.op==EOP.B || op.op==EOP.BF )
+      {
+        int start = out.indexOf(op);
+        int end   = out.indexOf(op.aux);
+
+        //System.out.printf("> Delta = %d (%d, %d)\n", end-start, start, end);
+        op.a = end - start;
+      }
+    }
+
+    return out;
+  }
+
 
 }

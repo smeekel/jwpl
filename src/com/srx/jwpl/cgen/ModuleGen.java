@@ -3,6 +3,7 @@ package com.srx.jwpl.cgen;
 import com.srx.jwpl.antlr.WPLParser;
 import com.srx.jwpl.vm.module.EOP;
 import com.srx.jwpl.vm.module.EVarFlags;
+import com.srx.jwpl.vm.module.OP;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 public class ModuleGen extends BaseGenerator<Object>
@@ -52,6 +53,16 @@ public class ModuleGen extends BaseGenerator<Object>
   }
 
   @Override
+  public Object visitReturnStatement(WPLParser.ReturnStatementContext ctx)
+  {
+    super.visitReturnStatement(ctx);
+
+    emit(EOP.RET, 1);
+
+    return null;
+  }
+
+  @Override
   public Object visitLambdaExpression(WPLParser.LambdaExpressionContext ctx)
   {
     String    name = ctx.internalName;
@@ -70,10 +81,11 @@ public class ModuleGen extends BaseGenerator<Object>
       emit(EOP.RET);
     defTree.pop();
 
-    throw new ICEException("Missing lambda branch");
+    //throw new ICEException("Missing lambda branch");
     //emit(EOP.PUSHFN, def.index);
+    emit(EOP.GETTK, 0, defTree.emitConst(def.name));
 
-    //return null;
+    return null;
   }
 
   @Override
@@ -172,6 +184,35 @@ public class ModuleGen extends BaseGenerator<Object>
   }
 
   @Override
+  public Object visitIfStatement(WPLParser.IfStatementContext ctx)
+  {
+    OP labelFalse   = genLabel();
+    OP labelTrue    = genLabel();
+
+
+    super.visit(ctx.getChild(1)); // expression
+    emit(EOP.BF).setAux(labelFalse);
+
+    super.visit(ctx.getChild(2)); // true-body
+
+    if( ctx.ELSE()!=null  )
+    {
+      emit(EOP.B).setAux(labelTrue);
+      emit(labelFalse);
+
+      super.visit(ctx.getChild(4));
+
+      emit(labelTrue);
+    }
+    else
+    {
+      emit(labelFalse);
+    }
+
+    return null;
+  }
+
+  @Override
   public Object visitAssignmentExpr(WPLParser.AssignmentExprContext ctx)
   {
     boolean memberAssign = ctx.getChild(0).getClass().isAssignableFrom(WPLParser.MemberAccessExprContext.class);
@@ -197,6 +238,26 @@ public class ModuleGen extends BaseGenerator<Object>
   }
 
   @Override
+  public Object visitCoalescingExpr(WPLParser.CoalescingExprContext ctx)
+  {
+    super.visitCoalescingExpr(ctx);
+    emit(EOP.COAL);
+    return null;
+  }
+
+  @Override
+  public Object visitSafeMemberAccessExpr(WPLParser.SafeMemberAccessExprContext ctx)
+  {
+    String name = ctx.IDENT().getText();
+
+    super.visitSafeMemberAccessExpr(ctx);
+    emit(EOP.PUSHK, getDefTree().emitConst(name));
+    emit(EOP.SGET);
+
+    return null;
+  }
+
+  @Override
   public Object visitMemberAccessExpr(WPLParser.MemberAccessExprContext ctx)
   {
     String name = ctx.IDENT().getText();
@@ -207,6 +268,8 @@ public class ModuleGen extends BaseGenerator<Object>
 
     return null;
   }
+
+
 
   @Override
   public Object visitIdentExpr(WPLParser.IdentExprContext ctx)

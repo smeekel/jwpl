@@ -17,4 +17,9 @@ public class Variable
   {
     this.type = type;
   }
+
+  public static Variable none()
+  {
+    return new Variable(EVariableTypes.NONE);
+  }
 }

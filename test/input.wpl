@@ -1,4 +1,5 @@
 
+/*
 fn outter(p0, p1)
 {
   print("outter:", p0, p1);
@@ -8,10 +9,30 @@ fn outter(p0, p1)
   {
     print("middle:", mp1, mp2);
   }
+
+  return "return value";
 }
 
+print("result", outter("aa", "bb"));
+*/
 
-outter("herp", "derp");
-outter.middle("aa", "bb");
+fn testfn()
+{
+  return () =>
+  {
+    return "lambda value";
+  };
+}
 
+//var aa = "testa";
+var aa = "none";
+
+if aa
+{
+  print("> cond is true");
+}
+else
+{
+  print("> cond is false");
+}
 

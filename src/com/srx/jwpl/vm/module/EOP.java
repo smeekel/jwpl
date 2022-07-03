@@ -19,6 +19,11 @@ public enum EOP
   ASGN      (0x0F, "asgn"),
   GETTK     (0x10, "gettk"),
   PUT       (0x11, "put"),
+  SGET      (0x12, "sget"),
+  COAL      (0x13, "coal"),
+  B         (0x14, "b"),
+  BF        (0x15, "bf"),
+  LABEL     (0x16, "label"),
   ;
 
   public final int    id;

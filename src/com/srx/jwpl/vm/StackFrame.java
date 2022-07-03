@@ -19,7 +19,6 @@ public class StackFrame
 
   public Variable get(int i)
   {
-    //System.out.printf("> GET(%d) - %d\n", i, calculateIndex(i));
     return stack.get(calculateIndex(i));
   }
 

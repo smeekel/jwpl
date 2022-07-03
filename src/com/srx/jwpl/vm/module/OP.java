@@ -6,6 +6,7 @@ public class OP
   public int a;
   public int b;
   public int c;
+  public Object aux;
 
   public OP()
   {
@@ -17,5 +18,11 @@ public class OP
     this.a  = values.length>0 ? values[0] : 0 ;
     this.b  = values.length>1 ? values[1] : 0 ;
     this.c  = values.length>2 ? values[2] : 0 ;
+  }
+
+  public OP setAux(Object value)
+  {
+    this.aux = value;
+    return this;
   }
 }
