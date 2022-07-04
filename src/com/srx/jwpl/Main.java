@@ -1,13 +1,35 @@
 package com.srx.jwpl;
 
 import com.srx.jwpl.cgen.Compiler;
+import com.srx.jwpl.elf.ELF;
 import com.srx.jwpl.vm.VirtualMachine;
 import com.srx.jwpl.vm.module.Flask;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 
 public class Main
 {
   public static void main(String[] args)
+  {
+    //compile();
+    eflTest();
+  }
+
+  private static void eflTest()
+  {
+    try
+    {
+      ELF.test();
+    }
+    catch( IOException e )
+    {
+      throw new RuntimeException(e);
+    }
+  }
+
+  protected static void compile()
   {
     try
     {
@@ -29,7 +51,5 @@ public class Main
     {
       e.printStackTrace();
     }
-
   }
-
 }
