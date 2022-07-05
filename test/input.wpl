@@ -1,30 +1,37 @@
 
-/*
-fn outter(p0, p1)
+class Exception(msg)
 {
-  print("outter:", p0, p1);
-  middle(p1, p0);
+  var message = msg;
 
+  fn __toString()
+  {
+    return message;
+  }
+
+  return this;
+}
+
+fn outter()
+{
   fn middle(mp1, mp2)
   {
     print("middle:", mp1, mp2);
   }
 
-  return "return value";
-}
-
-print("result", outter("aa", "bb"));
-*/
-
-fn testfn()
-{
-  return () =>
+  try
   {
-    return "lambda value";
-  };
+    print("outter");
+    throw Exception("E:herp derp");
+  }
+  catch e
+  {
+    print("outter:catch");
+    throw e;
+  }
 }
 
-//var aa = "testa";
+
+
 var aa = "none";
 
 if aa
@@ -36,3 +43,14 @@ else
   print("> cond is false");
 }
 
+
+try
+{
+  print("do stuff");
+  outter();
+}
+catch e
+{
+  print("Got exception", e);
+  //throw e;
+}

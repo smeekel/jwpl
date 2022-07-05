@@ -16,6 +16,10 @@ public class StackFrame
     frames  = new LinkedList<>();
   }
 
+  public int size()
+  {
+    return stack.size();
+  }
 
   public Variable get(int i)
   {

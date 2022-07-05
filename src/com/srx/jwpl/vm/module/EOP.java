@@ -24,6 +24,10 @@ public enum EOP
   B         (0x14, "b"),
   BF        (0x15, "bf"),
   LABEL     (0x16, "label"),
+  XENTER    (0x17, "xenter"),
+  XLEAVE    (0x18, "xleave"),
+  XTHROW    (0x19, "xthrow"),
+  XGET      (0x1A, "xget"),
   ;
 
   public final int    id;

@@ -213,6 +213,57 @@ public class ModuleGen extends BaseGenerator<Object>
   }
 
   @Override
+  public Object visitTryStatement(WPLParser.TryStatementContext ctx)
+  {
+    OP labelCatch   = genLabel();
+    OP labelExit    = genLabel();
+
+    emit(EOP.XENTER).setAux(labelCatch);
+      //
+      // Try Body
+      //
+      visit(ctx.getChild(1));
+      //
+    emit(EOP.XLEAVE);
+
+    emit(EOP.B).setAux( labelExit );
+    emit(labelCatch);
+      //
+      // Catch body
+      //
+      visit(ctx.getChild(2));
+      //
+    emit(labelExit);
+
+    return null;
+  }
+
+  @Override
+  public Object visitCatchElement(WPLParser.CatchElementContext ctx)
+  {
+    String    name  = ctx.IDENT().getText();
+    Scope.Def def   = new Scope.Def(Scope.EDefTypes.EXCEPTION);
+
+    def.name  = name;
+    def.index = defTree.getActive().allocStackSlot();
+
+    defTree.pushChild(def);
+    super.visitCatchElement(ctx);
+    defTree.popChild(def);
+
+    return null;
+  }
+
+  @Override
+  public Object visitThrowStatement(WPLParser.ThrowStatementContext ctx)
+  {
+    super.visitThrowStatement(ctx);
+    emit(EOP.XTHROW);
+
+    return null;
+  }
+
+  @Override
   public Object visitAssignmentExpr(WPLParser.AssignmentExprContext ctx)
   {
     boolean memberAssign = ctx.getChild(0).getClass().isAssignableFrom(WPLParser.MemberAccessExprContext.class);
@@ -302,6 +353,14 @@ public class ModuleGen extends BaseGenerator<Object>
       }
 
       emit(EOP.PUSH, def.index);
+    }
+    else if( def.type== Scope.EDefTypes.EXCEPTION )
+    {
+      emit(EOP.XGET);
+    }
+    else
+    {
+      throw new ICEException("Unhandled ident type: %s", def.type.toString());
     }
 
     return super.visitIdentExpr(ctx);

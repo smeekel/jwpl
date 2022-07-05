@@ -2,6 +2,7 @@ package com.srx.jwpl.cgen;
 
 import com.srx.jwpl.vm.module.*;
 
+import java.util.Deque;
 import java.util.Map;
 import java.util.Vector;
 
@@ -38,10 +39,16 @@ public class Baker
       flask.ops = bakeOpcodes(context.ops);
 
 
-    for( Map.Entry<String, Scope.Def> set : context.children.entrySet() )
+    for( Map.Entry<String, Deque<Scope.Def>> set : context.children.entrySet() )
     {
-      Scope.Def child = set.getValue();
+      Deque<Scope.Def> childList = set.getValue();
+      Scope.Def child;
       Variable  var;
+
+      assert childList.size() < 2 ;
+      child = childList.peek();
+      if( child==null )
+        continue;
 
       if( child.type == Scope.EDefTypes.VAR )
       {
@@ -73,7 +80,7 @@ public class Baker
 
     for( OP op : out )
     {
-      if( op.op==EOP.B || op.op==EOP.BF )
+      if( op.op==EOP.B || op.op==EOP.BF || op.op==EOP.XENTER )
       {
         int start = out.indexOf(op);
         int end   = out.indexOf(op.aux);

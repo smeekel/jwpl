@@ -13,7 +13,7 @@ public class RunTime
     for( int i=ctx.cvals-1 ; i>=0 ; i-- )
     {
       var = ctx.stack.get(i);
-      out = VirtualMachine.varToString(var);
+      out = ctx.vm.varToString(var);
       System.out.print(out);
       if( i>0 ) System.out.print(" ");
     }
