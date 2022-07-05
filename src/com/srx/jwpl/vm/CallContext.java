@@ -2,18 +2,17 @@ package com.srx.jwpl.vm;
 
 public class CallContext
 {
-  StackFrame stack;
-  int cvals;
-  int rvals;
+  public VirtualMachine  vm;
+  public StackFrame      stack;
+  public int             cvals;
+  public int             rvals;
 
-  public CallContext()
+  public CallContext(VirtualMachine vm, int cvals, int rvals)
   {
+    this.vm     = vm;
+    this.stack  = vm.getStack();
+    this.cvals  = cvals;
+    this.rvals  = rvals;
   }
 
-  public CallContext(StackFrame stack, int cvals, int rvals)
-  {
-    this.stack = stack;
-    this.cvals = cvals;
-    this.rvals = rvals;
-  }
 }

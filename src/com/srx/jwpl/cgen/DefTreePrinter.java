@@ -3,6 +3,7 @@ package com.srx.jwpl.cgen;
 import com.srx.jwpl.vm.module.EVarFlags;
 import com.srx.jwpl.vm.module.OP;
 
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class DefTreePrinter
       case FLASK  -> "FLASK";
       case VAR    -> "..VAR";
       case PARAM  -> "PARAM";
+      case EXCEPTION -> "EXCEP";
     };
 
 
@@ -96,13 +98,19 @@ public class DefTreePrinter
   {
     if( def.children!=null )
     {
-      for( Scope.Def child : def.children.values() )
+      for( Deque<Scope.Def> childList : def.children.values() )
       {
+        Scope.Def child = childList.peek();
+        if( child==null )
+          continue;
         if( child.type!= Scope.EDefTypes.FLASK )
           print_def(child, level + 1);
       }
-      for( Scope.Def child : def.children.values() )
+      for( Deque<Scope.Def> childList : def.children.values() )
       {
+        Scope.Def child = childList.peek();
+        if( child==null )
+          continue;
         if( child.type== Scope.EDefTypes.FLASK )
           print_def(child, level + 1);
       }
@@ -190,6 +198,7 @@ public class DefTreePrinter
 
         case B:
         case BF:
+        case XENTER:
           sb.append(String.format(
             "%s%s l%d\n",
             indent,

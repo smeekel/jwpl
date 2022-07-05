@@ -2,6 +2,7 @@ package com.srx.jwpl.vm;
 
 import com.srx.jwpl.vm.module.*;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Vector;
@@ -12,14 +13,8 @@ public class VirtualMachine
   protected Map<String, Flask>    index;
   protected LinkedList<CallState> callStack;
   protected StackFrame            stack;
+  protected Variable              exception;
 
-  protected static class CallState
-  {
-    public Flask  flask;
-    public int    ip;
-    public int    cvals;
-    public int    rvals;
-  }
 
   public VirtualMachine()
   {
@@ -32,7 +27,12 @@ public class VirtualMachine
   {
     modules.add(flask);
     importGlobals(flask);
-    exec(flask);
+    exec(flask, 0, 0);
+  }
+
+  public StackFrame getStack()
+  {
+    return stack;
   }
 
   protected void importGlobals(Flask flask)
@@ -54,17 +54,20 @@ public class VirtualMachine
     }
   }
 
-  protected void exec(Flask flask)
+  protected void exec(Flask flask, int cvals, int rvals)
   {
-    CallState cstate = new CallState();
-    cstate.flask = flask;
-    cstate.ip    = 0;
-    callStack.clear();
+    CallState cstate  = new CallState();
+    cstate.flask  = flask;
+    cstate.ip     = 0;
+    cstate.cvals  = cvals;
+    cstate.rvals  = rvals;
     callStack.push(cstate);
 
+    int csTop = callStack.size();
 
 
-    while( !callStack.isEmpty() )
+
+    while( csTop<=callStack.size() )
     {
       final OP op = cstate.flask.ops.get(cstate.ip++);
 
@@ -87,12 +90,76 @@ public class VirtualMachine
         case COAL     -> opCOAL(op);
         case B        -> opB(op);
         case BF       -> opBF(op);
+        case XENTER   -> opXENTER(op);
+        case XLEAVE   -> opXLEAVE(op);
+        case XGET     -> opXGET(op);
+        case XTHROW   -> opXTHROW(op);
         default -> throw new RuntimeException(String.format("Missing opcode support: %s", op.op.mnemonic));
       }
 
-      if( (op.op==EOP.CALL || op.op==EOP.RET) && callStack.size()>0 )
+      if( callStack.size()>0 )
         cstate = callStack.getFirst();
     }
+
+  }
+
+  private void opXTHROW(OP op)
+  {
+    this.exception = stack.get(0);
+    stack.pop();
+
+    //
+    // Start stack unwind
+    // @@TODO@@ This does not need to loop. A single step should be sufficient
+    //
+    Iterator<CallState>           cstateIter = callStack.iterator();
+    Iterator<CallState.EHandler>  handlerIter;
+    while( cstateIter.hasNext() )
+    {
+      CallState cstate = cstateIter.next();
+
+      handlerIter = cstate.ehandlers.iterator();
+
+      while( handlerIter.hasNext() )
+      {
+        CallState.EHandler handler = handlerIter.next();
+
+        cstate.ip = handler.destIp;
+        while( stack.size()>handler.stackSize )
+          stack.pop();
+
+        handlerIter.remove();
+        return;
+      }
+
+      cstateIter.remove();
+    }
+
+    //
+    // Nothing found to handle this exception
+    // -> Uncaught exception
+    //
+    throw new UncaughtException(varToString(this.exception));
+  }
+
+  private void opXGET(OP op)
+  {
+    stack.push(exception);
+  }
+
+  private void opXLEAVE(OP op)
+  {
+    callStack.getFirst().ehandlers.pop();
+  }
+
+  private void opXENTER(OP op)
+  {
+    CallState.EHandler  handler = new CallState.EHandler();
+    CallState           cstate  = callStack.getFirst();
+
+    handler.destIp    = op.a + cstate.ip;
+    handler.stackSize = stack.size();
+    cstate.ehandlers.push(handler);
   }
 
   private void opBF(OP op)
@@ -227,7 +294,6 @@ public class VirtualMachine
       int firstSlot   = total - 1;
 
 
-      System.out.printf("> total slots %d\n", total);
       for( int i=0 ; i<total ; i++ )
       {
         if( i==0 && me.rvals>0 )
@@ -271,7 +337,7 @@ public class VirtualMachine
     }
     else
     {
-      toCall.external.call(new CallContext(stack, op.a, op.b));
+      toCall.external.call(new CallContext(this, op.a, op.b));
     }
   }
 
@@ -333,8 +399,10 @@ public class VirtualMachine
     stack.push(var);
   }
 
-  public static String varToString(Variable var)
+  public String varToString(Variable var)
   {
+    if( var==null ) return null;
+
     return switch( var.type )
     {
       case NONE     -> "<NONE>";
@@ -342,12 +410,35 @@ public class VirtualMachine
       case FLOAT    -> ((Float)var.value).toString();
       case STRING   -> var.value.toString();
       case BOOLEAN  -> ((Boolean)var.value).toString();
-      case FLASK    -> String.format("<Flask %s>", ((Flask)var.value).name);
+      case FLASK    -> flaskToString(var);
       case REF      -> "<REF>";
     };
   }
 
-  public static boolean varToBoolean(Variable var)
+  public String flaskToString(Variable var)
+  {
+    Flask     flask = (Flask)var.value;
+    Variable  toString;
+
+    toString = flask.members.get("__toString");
+    if( toString!=null && toString.type==EVariableTypes.FLASK )
+    {
+      Variable stringVar;
+
+      stack.push(Variable.none());
+      this.exec( (Flask)toString.value, 0, 1 );
+      stringVar = stack.get(0);
+      stack.pop();
+
+      return varToString(stringVar);
+    }
+    else
+    {
+      return String.format("<Flask %s>", flask.name);
+    }
+  }
+
+  public boolean varToBoolean(Variable var)
   {
     return switch( var.type )
       {

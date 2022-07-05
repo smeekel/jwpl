@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1330452c-7768-48f0-ac20-c1919f877e45" name="Changes" comment="Added VM with some experimental functionality, added native method calling support (experimental), and bug fixes">
+    <list default="true" id="1330452c-7768-48f0-ac20-c1919f877e45" name="Changes" comment="Added experimental vm nested call functionality, added object to string callback support (in vm), added nested variable scoping (experimental), added ph1 exception support">
+      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/CallState.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/UncaughtException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Baker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Baker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/BaseGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/BaseGenerator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/DefTreePrinter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/DefTreePrinter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Scope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Scope.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/CallContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/CallContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/RunTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/RunTime.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/StackFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/StackFrame.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/VirtualMachine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/VirtualMachine.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EOP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EOP.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/OP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/OP.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Variable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Variable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/input.wpl" beforeDir="false" afterPath="$PROJECT_DIR$/test/input.wpl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -32,7 +33,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="dev-two-stage" />
+        <entry key="$PROJECT_DIR$" value="dev-elf" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -61,11 +62,12 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_directory_selection": "C:/dev/jwpl/src",
     "last_opened_file_path": "C:/dev/jwpl/test/input.wpl",
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.sourceCode.Java"
+    "settings.editor.selected.configurable": "editor.preferences.fonts.default"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -76,6 +78,8 @@
       <recent name="C:\dev\jwpl\gen\com\srx\jwpl\antlr" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="com.srx.jwpl.vm.CallState" />
+      <recent name="CallState" />
       <recent name="com.srx.jwpl.vm.RunTime" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
@@ -107,6 +111,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.com.srx.jwpl.Main" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.Main" />
         <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
@@ -176,7 +182,21 @@
       <option name="project" value="LOCAL" />
       <updated>1656806431526</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Added IF-statements, RETURN-statements, safe access, coalescing opr, initial branching and labeling support.">
+      <created>1656880965151</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1656880965151</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Building ELF output format support (experimental)">
+      <created>1656974967235</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1656974967235</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -211,13 +231,17 @@
     <MESSAGE value="Work in progress. Building experimental flat member storage and nested parent access mechanism" />
     <MESSAGE value="Improved scope/member access system" />
     <MESSAGE value="Added VM with some experimental functionality, added native method calling support (experimental), and bug fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added VM with some experimental functionality, added native method calling support (experimental), and bug fixes" />
+    <MESSAGE value="Added IF-statements, RETURN-statements, safe access, coalescing opr, initial branching and labeling support." />
+    <MESSAGE value="Building ELF output format support (experimental)" />
+    <MESSAGE value="Added experimental vm nested call functionality, added object to string callback support (in vm), added nested variable scoping (experimental), added ph1 exception support" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added experimental vm nested call functionality, added object to string callback support (in vm), added nested variable scoping (experimental), added ph1 exception support" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>
       <pinned-members>
         <PinnedItemInfo parentTag="com.srx.jwpl.vm.VirtualMachine" memberName="stack" />
         <PinnedItemInfo parentTag="com.srx.jwpl.vm.module.Flask" memberName="members" />
+        <PinnedItemInfo parentTag="com.srx.jwpl.vm.StackFrame" memberName="stack" />
       </pinned-members>
     </pin-to-top-manager>
     <watches-manager>

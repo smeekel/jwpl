@@ -3,9 +3,7 @@ package com.srx.jwpl.cgen;
 import com.srx.jwpl.vm.module.EVarFlags;
 import com.srx.jwpl.vm.module.OP;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Vector;
+import java.util.*;
 
 public class Scope
 {
@@ -13,7 +11,8 @@ public class Scope
   {
     FLASK,
     VAR,
-    PARAM
+    PARAM,
+    EXCEPTION,
   }
 
   public static class Def
@@ -24,9 +23,9 @@ public class Scope
     public Integer              index;
     public EDefTypes            type;
     public EnumSet<EVarFlags>   flags;
-    public HashMap<String, Def> children;
     public Vector<OP>           ops;
     public Vector<String>       consts;
+    public HashMap<String, Deque<Def>> children;
 
     protected int stackElements;
 
@@ -77,7 +76,8 @@ public class Scope
 
   public Def findLocal(String name)
   {
-    return active.children.get(name);
+    Deque<Def> pile = active.children.get(name);
+    return pile.peek();
   }
 
   public Def findFirst(String name)
@@ -86,9 +86,9 @@ public class Scope
 
     while( outter!=null )
     {
-      Def def = outter.children.get(name);
+      Deque<Def> def = outter.children.get(name);
       if( def!=null )
-        return def;
+        return def.peek();
 
       outter = outter.parent;
     }
@@ -98,14 +98,30 @@ public class Scope
 
   public void add(Def def)
   {
-    active.children.put(def.name, def);
+    if( !active.children.containsKey(def.name) )
+      active.children.put(def.name, new LinkedList<>());
+
+    active.children.get(def.name).push(def);
     def.parent  = active;
     def.inTree  = true;
   }
 
+  public void pushChild(Def def)
+  {
+    add(def);
+  }
+
+  public void popChild(Def def)
+  {
+    active.children.get(def.name).pop();
+  }
+
   public void addRoot(Def def)
   {
-    root.children.put(def.name, def);
+    if( !root.children.containsKey(def.name) )
+      root.children.put(def.name, new LinkedList<>());
+
+    root.children.get(def.name).push(def);
     def.parent  = root;
     def.inTree  = true;
   }
