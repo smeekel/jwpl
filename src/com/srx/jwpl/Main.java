@@ -2,10 +2,10 @@ package com.srx.jwpl;
 
 import com.srx.jwpl.cgen.Compiler;
 import com.srx.jwpl.elf.ELF;
+import com.srx.jwpl.elf.SHT_note;
 import com.srx.jwpl.vm.VirtualMachine;
 import com.srx.jwpl.vm.module.Flask;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
@@ -21,7 +21,13 @@ public class Main
   {
     try
     {
-      ELF.test();
+      ELF elf = new ELF();
+      SHT_note notes = new SHT_note();
+
+      elf.addSection(notes, ".test.notes");
+      notes.value.append("Some test text goes here...");
+
+      elf.write("c:/temp/test.elf");
     }
     catch( IOException e )
     {

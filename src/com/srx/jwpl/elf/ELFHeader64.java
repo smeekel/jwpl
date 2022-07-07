@@ -1,11 +1,11 @@
 package com.srx.jwpl.elf;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class Header64
+public class ELFHeader64
 {
   public int    e_magic;
   public byte   e_class;
@@ -27,19 +27,31 @@ public class Header64
   public short  e_shNumber;
   public short  e_shStringIndex;
 
-  public Header64()
+  public ELFHeader64()
   {
     e_magic         = 0x7F454C46;
-    e_class         = 2;
-    e_data          = 1;
+    e_class         = 2; // 2 = 64bit
+    e_data          = 1; // 1 = Little endian
     e_headerVersion = 1;
     e_elfVersion    = 1;
-    e_phOffset      = 0x40;
+    e_phOffset      = 0;
+    e_ehSize        = 0x40; // size of this header
+    e_phEntSize     = 0x38; // size of program header elements
+    e_shEntSize     = 0x40; // size of section header elements
+
+    e_abi           = 0x30; // WPL ABI id
+    e_abiVersion    = 1;
+    e_machine       = 0x200; // WPL opcode set v20220701 (v1)
   }
 
-  public void write(DataOutputStream out2) throws IOException
+  public int getSize()
   {
-    ByteBuffer buffer = ByteBuffer.allocate(0x50);
+    return 0x40;
+  }
+
+  public void write(OutputStream out) throws IOException
+  {
+    ByteBuffer buffer = ByteBuffer.allocate(0x40);
     byte[] pad = new byte[7];
 
     buffer.order(ByteOrder.BIG_ENDIAN);
@@ -65,6 +77,6 @@ public class Header64
     buffer.putShort (e_shNumber);
     buffer.putShort (e_shStringIndex);
 
-    out2.write(buffer.array());
+    out.write(buffer.array());
   }
 }

@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1330452c-7768-48f0-ac20-c1919f877e45" name="Changes" comment="Added experimental vm nested call functionality, added object to string callback support (in vm), added nested variable scoping (experimental), added ph1 exception support">
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/CallState.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/UncaughtException.java" afterDir="false" />
+    <list default="true" id="1330452c-7768-48f0-ac20-c1919f877e45" name="Changes" comment="Basic ELF64 writing support added (validated against readelf)">
+      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ESectionTypes.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ProgramHeader64.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_note.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_null.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_strtab.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/Section64.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Baker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Baker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/DefTreePrinter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/DefTreePrinter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Scope.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Scope.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/CallContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/CallContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/RunTime.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/RunTime.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/StackFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/StackFrame.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/VirtualMachine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/VirtualMachine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EOP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EOP.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/input.wpl" beforeDir="false" afterPath="$PROJECT_DIR$/test/input.wpl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ELF.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ELF.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/Header64.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ELFHeader64.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -24,9 +21,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Enum" />
         <option value="Interface" />
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -114,6 +111,7 @@
         <item itemvalue="Application.Main" />
         <item itemvalue="Application.Main" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
@@ -196,7 +194,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656974967235</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Added experimental vm nested call functionality, added object to string callback support (in vm), added nested variable scoping (experimental), added ph1 exception support">
+      <created>1656995446793</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1656995446793</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -210,7 +215,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="HEAD" />
+                        <option value="2-elf-output-support" />
                       </list>
                     </value>
                   </entry>
@@ -234,7 +239,8 @@
     <MESSAGE value="Added IF-statements, RETURN-statements, safe access, coalescing opr, initial branching and labeling support." />
     <MESSAGE value="Building ELF output format support (experimental)" />
     <MESSAGE value="Added experimental vm nested call functionality, added object to string callback support (in vm), added nested variable scoping (experimental), added ph1 exception support" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added experimental vm nested call functionality, added object to string callback support (in vm), added nested variable scoping (experimental), added ph1 exception support" />
+    <MESSAGE value="Basic ELF64 writing support added (validated against readelf)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Basic ELF64 writing support added (validated against readelf)" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>

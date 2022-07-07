@@ -1,23 +1,64 @@
 package com.srx.jwpl.elf;
 
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.util.Deque;
+import java.util.LinkedList;
 
 public class ELF
 {
-  public static void test() throws IOException
+  protected ELFHeader64       elfHeader;
+  protected Deque<Section64>  sections;
+  protected SHT_strtab        sectionNames;
+
+
+  public ELF()
   {
-    DataOutputStream out = new DataOutputStream(new FileOutputStream("c:/temp/test.elf"));
-    Header64 header = new Header64();
+    elfHeader     = new ELFHeader64();
+    sections      = new LinkedList<>();
+    sectionNames  = new SHT_strtab();
 
-    header.e_abi      = (byte)0x30;
-    header.e_type     = (byte)0x02;
-    header.e_machine  = 0x0200;
+    elfHeader.e_type = 0x02;
+    sectionNames.sh_name = sectionNames.addString(".shstrtab");
 
-    header.write(out);
-    out.close();
-
+    addSection(new SHT_null(), null);
   }
+
+  public void addSection(Section64 section, String name)
+  {
+    if( name!=null ) section.sh_name = sectionNames.addString(name);
+    sections.addLast(section);
+  }
+
+  public void write(String filename) throws IOException
+  {
+    FileOutputStream fout     = new FileOutputStream(filename);
+    FileChannel      channel  = fout.getChannel();
+
+    elfHeader.e_shNumber      = (short)( sections.size() + 1 );
+    elfHeader.e_shStringIndex = (short)sections.size();
+    channel.position(elfHeader.getSize());
+
+    sections.addLast(sectionNames);
+    for( Section64 section : sections )
+    {
+      section.sh_offset = channel.position();
+      section.writeBody(fout);
+    }
+
+    elfHeader.e_shOffset = channel.position();
+
+    for( Section64 section : sections )
+      section.writeHeader(fout);
+
+    channel.position(0);
+    elfHeader.write(fout);
+
+    sections.removeLast(); // remove the sectionNames section
+    fout.close();
+  }
+
+
+
 }
