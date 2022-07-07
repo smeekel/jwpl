@@ -1,9 +1,8 @@
 package com.srx.jwpl.elf;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
-public class SHT_null extends Section64
+public class SHT_null extends SHT
 {
   public SHT_null()
   {

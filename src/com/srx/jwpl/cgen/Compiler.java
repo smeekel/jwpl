@@ -2,7 +2,7 @@ package com.srx.jwpl.cgen;
 
 import com.srx.jwpl.antlr.WPLLexer;
 import com.srx.jwpl.antlr.WPLParser;
-import com.srx.jwpl.vm.module.Flask;
+import com.srx.jwpl.vm.module.Module;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -33,13 +33,13 @@ public class Compiler
     return msgListener!=null && !msgListener.hasErrors();
   }
 
-  public Flask compile(String filename) throws IOException
+  public Module compile(String filename) throws IOException
   {
     FileInputStream fin = new FileInputStream(filename);
     return compile(fin);
   }
 
-  public Flask compile(InputStream in) throws IOException
+  public Module compile(InputStream in) throws IOException
   {
     WPLLexer          lexer;
     WPLParser         parser;
@@ -74,7 +74,7 @@ public class Compiler
 
 
     if( msgListener.hasErrors() ) return null;
-    Flask module = Baker.bake(defTree);
+    Module module = Baker.bake(defTree);
 
     return module;
   }

@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public abstract class Section64
+public abstract class SHT
 {
   public int    sh_name;
   public int    sh_type;
@@ -20,7 +20,7 @@ public abstract class Section64
 
   public long file_offset;
 
-  public Section64()
+  public SHT()
   {
     sh_addralign = 1;
   }

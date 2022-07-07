@@ -1,12 +1,10 @@
 package com.srx.jwpl;
 
 import com.srx.jwpl.cgen.Compiler;
-import com.srx.jwpl.elf.ELF;
-import com.srx.jwpl.elf.SHT_note;
+import com.srx.jwpl.elf.ELF64;
+import com.srx.jwpl.elf.WPLELF;
 import com.srx.jwpl.vm.VirtualMachine;
-import com.srx.jwpl.vm.module.Flask;
-
-import java.io.IOException;
+import com.srx.jwpl.vm.module.Module;
 
 
 public class Main
@@ -21,15 +19,15 @@ public class Main
   {
     try
     {
-      ELF elf = new ELF();
-      SHT_note notes = new SHT_note();
+      Compiler compiler = new Compiler();
+      ELF64 elf;
+      Module  module;
 
-      elf.addSection(notes, ".test.notes");
-      notes.value.append("Some test text goes here...");
-
+      module  = compiler.compile("test/input.wpl");
+      elf     = new WPLELF(module);
       elf.write("c:/temp/test.elf");
     }
-    catch( IOException e )
+    catch( Exception e )
     {
       throw new RuntimeException(e);
     }
@@ -40,16 +38,16 @@ public class Main
     try
     {
       Compiler compiler = new Compiler();
-      Flask flask;
+      Module module;
 
-      flask = compiler.compile("test/input.wpl");
+      module = compiler.compile("test/input.wpl");
       compiler.defDump();
       compiler.getMessages().print();
 
       if( !compiler.getMessages().hasErrors() )
       {
         VirtualMachine vm = new VirtualMachine();
-        vm.addExec(flask);
+        vm.addExec(module);
       }
       System.out.print("\n");
     }

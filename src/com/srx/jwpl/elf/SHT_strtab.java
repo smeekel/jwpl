@@ -5,7 +5,7 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SHT_strtab extends Section64
+public class SHT_strtab extends SHT
 {
   protected List<String> stringList = new LinkedList<>();
   protected int offset = 0;
@@ -15,8 +15,6 @@ public class SHT_strtab extends Section64
   {
     sh_type  = ESectionTypes.STRTAB.getValue();
     sh_flags = 0x20;
-
-    addString("");
   }
 
   public void writeHeader(OutputStream out) throws IOException

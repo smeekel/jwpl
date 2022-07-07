@@ -81,8 +81,6 @@ public class ModuleGen extends BaseGenerator<Object>
       emit(EOP.RET);
     defTree.pop();
 
-    //throw new ICEException("Missing lambda branch");
-    //emit(EOP.PUSHFN, def.index);
     emit(EOP.GETTK, 0, defTree.emitConst(def.name));
 
     return null;

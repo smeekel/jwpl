@@ -6,29 +6,33 @@ import java.nio.channels.FileChannel;
 import java.util.Deque;
 import java.util.LinkedList;
 
-public class ELF
+public class ELF64
 {
   protected ELFHeader64       elfHeader;
-  protected Deque<Section64>  sections;
+  protected Deque<SHT>  sections;
   protected SHT_strtab        sectionNames;
 
 
-  public ELF()
+  protected ELF64()
   {
     elfHeader     = new ELFHeader64();
     sections      = new LinkedList<>();
     sectionNames  = new SHT_strtab();
 
-    elfHeader.e_type = 0x02;
-    sectionNames.sh_name = sectionNames.addString(".shstrtab");
+
+    sectionNames.addString(""); // Name for the NULL section -> ""
+    elfHeader.e_type      = 0x02;
+    sectionNames.sh_name  = sectionNames.addString(".shstrtab");
 
     addSection(new SHT_null(), null);
   }
 
-  public void addSection(Section64 section, String name)
+  protected int addSection(SHT section, String name)
   {
     if( name!=null ) section.sh_name = sectionNames.addString(name);
+
     sections.addLast(section);
+    return sections.size()-1;
   }
 
   public void write(String filename) throws IOException
@@ -41,7 +45,7 @@ public class ELF
     channel.position(elfHeader.getSize());
 
     sections.addLast(sectionNames);
-    for( Section64 section : sections )
+    for( SHT section : sections )
     {
       section.sh_offset = channel.position();
       section.writeBody(fout);
@@ -49,7 +53,7 @@ public class ELF
 
     elfHeader.e_shOffset = channel.position();
 
-    for( Section64 section : sections )
+    for( SHT section : sections )
       section.writeHeader(fout);
 
     channel.position(0);
@@ -58,7 +62,5 @@ public class ELF
     sections.removeLast(); // remove the sectionNames section
     fout.close();
   }
-
-
 
 }

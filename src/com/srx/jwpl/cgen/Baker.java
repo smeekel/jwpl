@@ -1,54 +1,65 @@
 package com.srx.jwpl.cgen;
 
+import com.srx.jwpl.vm.module.Module;
 import com.srx.jwpl.vm.module.*;
 
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Vector;
 
 public class Baker
 {
-  public static Flask bake(Scope tree)
+  public static Module bake(Scope tree)
   {
     Baker baker = new Baker();
 
-    return baker.bakeFlask(tree.getRoot());
+    baker.bakeFlask(tree.getRoot());
+
+    return baker.module;
   }
 
-  protected Flask root = null;
+  protected Module module;
 
   protected Baker()
   {
+    module = new Module();
+    module.flasks   = new LinkedList<>();
+    module.opcodes  = new LinkedList<>();
+    module.consts   = new LinkedList<>();
   }
+
 
   protected Flask bakeFlask(Scope.Def context)
   {
     Flask flask = new Flask();
+
     flask.name = context.name;
-
-    if( context.type == Scope.EDefTypes.FLASK && context.flags.contains(EVarFlags.F_GLOBAL) )
-    {
+    if( context.flags.contains(EVarFlags.F_GLOBAL) )
       return flask;
-    }
-
-    if( root==null )
-      root = flask;
     if( context.consts!=null )
-      flask.consts = new Vector<>(context.consts);
+      bakeConsts(context.consts);
     if( context.ops!=null )
-      flask.ops = bakeOpcodes(context.ops);
+      bakeOpcodes(flask, context.ops);
 
+    module.flasks.add(flask);
+    flask.module = module;
 
     for( Map.Entry<String, Deque<Scope.Def>> set : context.children.entrySet() )
     {
-      Deque<Scope.Def> childList = set.getValue();
-      Scope.Def child;
-      Variable  var;
+      Deque<Scope.Def>  children = set.getValue();
+      Scope.Def         child;
+      Variable          var;
 
-      assert childList.size() < 2 ;
-      child = childList.peek();
-      if( child==null )
-        continue;
+      //
+      // Sanity check
+      // There should only be 0 or 1 children of a scope chain. Any more would mean a temporary variable
+      // was not released correctly.
+      //
+      assert children.size() < 2 ;
+
+      child = children.peek();
+      if( child==null ) continue;
 
       if( child.type == Scope.EDefTypes.VAR )
       {
@@ -59,14 +70,13 @@ public class Baker
       }
       else if( child.type == Scope.EDefTypes.FLASK )
       {
-        Flask childFlask = bakeFlask(child);
-
-        var = new Variable();
-        var.type  = EVariableTypes.FLASK;
-        var.value = childFlask;
+        var = new Variable(EVariableTypes.FLASK);
         var.flags = child.flags;
-        childFlask.parent = flask;
-        childFlask.consts = root.consts;
+
+        Flask childFn   = bakeFlask(child);
+        childFn.parent  = flask;
+        var.value       = childFn;
+
         flask.set(set.getKey(), var);
       }
     }
@@ -74,23 +84,29 @@ public class Baker
     return flask;
   }
 
-  private Vector<OP> bakeOpcodes(Vector<OP> src)
+  protected void bakeConsts(Vector<String> consts)
   {
-    Vector<OP> out = new Vector<>(src);
+    module.consts.addAll(consts);
+  }
 
-    for( OP op : out )
+  protected void bakeOpcodes(Flask flask, Vector<OP> src)
+  {
+    Vector<OP> dst = new Vector<>(src);
+
+    for( OP op : dst )
     {
       if( op.op==EOP.B || op.op==EOP.BF || op.op==EOP.XENTER )
       {
-        int start = out.indexOf(op);
-        int end   = out.indexOf(op.aux);
+        int start = dst.indexOf(op);
+        int end   = dst.indexOf(op.aux);
 
-        //System.out.printf("> Delta = %d (%d, %d)\n", end-start, start, end);
         op.a = end - start;
       }
     }
 
-    return out;
+    flask.opFirst = module.opcodes.size();
+    module.opcodes.addAll(dst);
+    flask.opCount = dst.size();
   }
 
 

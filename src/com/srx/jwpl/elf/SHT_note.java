@@ -3,7 +3,7 @@ package com.srx.jwpl.elf;
 import java.io.IOException;
 import java.io.OutputStream;
 
-public class SHT_note extends Section64
+public class SHT_note extends SHT
 {
   public StringBuilder value = new StringBuilder();
 

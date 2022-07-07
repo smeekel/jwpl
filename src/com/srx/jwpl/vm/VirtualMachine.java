@@ -1,16 +1,15 @@
 package com.srx.jwpl.vm;
 
+import com.srx.jwpl.vm.module.Module;
 import com.srx.jwpl.vm.module.*;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Vector;
 
 public class VirtualMachine
 {
-  protected Vector<Flask>         modules;
-  protected Map<String, Flask>    index;
+  protected Vector<Module>        modules;
   protected LinkedList<CallState> callStack;
   protected StackFrame            stack;
   protected Variable              exception;
@@ -23,11 +22,11 @@ public class VirtualMachine
     stack     = new StackFrame();
   }
 
-  public void addExec(Flask flask)
+  public void addExec(Module module)
   {
-    modules.add(flask);
-    importGlobals(flask);
-    exec(flask, 0, 0);
+    modules.add(module);
+    importGlobals(module);
+    exec(module.getRootFlask(), 0, 0);
   }
 
   public StackFrame getStack()
@@ -35,30 +34,32 @@ public class VirtualMachine
     return stack;
   }
 
-  protected void importGlobals(Flask flask)
+  protected void importGlobals(Module module)
   {
-    for( Variable var : flask.members.values() )
+    for( Flask flask : module.flasks )
     {
-      if( var.type != EVariableTypes.FLASK )
-        continue;
-      if( !var.flags.contains(EVarFlags.F_GLOBAL) )
-        continue;
-
-      Flask inner = (Flask)var.value;
-
-      inner.external = switch( inner.name )
+      for( Variable var : flask.members.values() )
       {
-        case "print"  -> RunTime::extPrint;
-        default       -> RunTime::extStub;
-      };
+        if( var.type != EVariableTypes.FLASK )
+          continue;
+        if( !var.flags.contains(EVarFlags.F_GLOBAL) )
+          continue;
+
+        Flask inner = (Flask)var.value;
+        inner.external = switch( inner.name )
+        {
+          case "print"  -> RunTime::extPrint;
+          default       -> RunTime::extStub;
+        };
+      }
     }
   }
 
   protected void exec(Flask flask, int cvals, int rvals)
   {
-    CallState cstate  = new CallState();
+    CallState cstate = new CallState();
     cstate.flask  = flask;
-    cstate.ip     = 0;
+    cstate.ip     = flask.opFirst;
     cstate.cvals  = cvals;
     cstate.rvals  = rvals;
     callStack.push(cstate);
@@ -69,7 +70,9 @@ public class VirtualMachine
 
     while( csTop<=callStack.size() )
     {
-      final OP op = cstate.flask.ops.get(cstate.ip++);
+      final OP op = cstate.flask.module.opcodes.get(cstate.ip++);
+
+      //System.out.printf("%04d: %s\n", cstate.ip-1, op.op.mnemonic);
 
       switch( op.op )
       {
@@ -110,7 +113,7 @@ public class VirtualMachine
 
     //
     // Start stack unwind
-    // @@TODO@@ This does not need to loop. A single step should be sufficient
+    // TODO This does not need to loop. A single step should be sufficient
     //
     Iterator<CallState>           cstateIter = callStack.iterator();
     Iterator<CallState.EHandler>  handlerIter;
@@ -331,6 +334,7 @@ public class VirtualMachine
       nextCstate.flask  = toCall;
       nextCstate.cvals  = op.a;
       nextCstate.rvals  = op.b;
+      nextCstate.ip     = toCall.opFirst;
 
       stack.enter(op.a);
       callStack.push(nextCstate);
@@ -349,7 +353,10 @@ public class VirtualMachine
   private void opPUSHK(OP op)
   {
     CallState cstate = callStack.getFirst();
-    String    value  = cstate.flask.consts.get(op.a);
+    String    value;
+
+    value = cstate.flask.module.consts.get(op.a);
+
     pushStr(value);
   }
 
@@ -363,7 +370,8 @@ public class VirtualMachine
     for( int i=0 ; i<op.a ; i++ )
       thisRef = thisRef.parent;
 
-    memberName = cstate.flask.consts.get(op.b);
+    memberName = cstate.flask.module.consts.get(op.b);
+
     push( thisRef.members.get(memberName) );
   }
 

@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1330452c-7768-48f0-ac20-c1919f877e45" name="Changes" comment="Basic ELF64 writing support added (validated against readelf)">
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ESectionTypes.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ProgramHeader64.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_note.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_null.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_strtab.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/Section64.java" afterDir="false" />
+    <list default="true" id="1330452c-7768-48f0-ac20-c1919f877e45" name="Changes" comment="Experimental ELF64 output support added and working">
+      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_progbits.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/WPLELF.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Module.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jwpl.iml" beforeDir="false" afterPath="$PROJECT_DIR$/jwpl.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ELF.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ELF.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/Header64.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ELFHeader64.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Baker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Baker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Compiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Compiler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ELF.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ELF64.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_note.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_note.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_null.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_null.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_strtab.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_strtab.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/Section64.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/VirtualMachine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/VirtualMachine.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EVarFlags.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EVarFlags.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Flask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Flask.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,8 +30,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
-        <option value="Class" />
         <option value="Enum" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -64,7 +72,7 @@
     "project.structure.last.edited": "Libraries",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "editor.preferences.fonts.default"
+    "settings.editor.selected.configurable": "preferences.sourceCode.Java"
   }
 }]]></component>
   <component name="RecentsManager">
@@ -201,7 +209,14 @@
       <option name="project" value="LOCAL" />
       <updated>1656995446793</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Basic ELF64 writing support added (validated against readelf)">
+      <created>1657157239755</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1657157239755</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -240,7 +255,8 @@
     <MESSAGE value="Building ELF output format support (experimental)" />
     <MESSAGE value="Added experimental vm nested call functionality, added object to string callback support (in vm), added nested variable scoping (experimental), added ph1 exception support" />
     <MESSAGE value="Basic ELF64 writing support added (validated against readelf)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Basic ELF64 writing support added (validated against readelf)" />
+    <MESSAGE value="Experimental ELF64 output support added and working" />
+    <option name="LAST_COMMIT_MESSAGE" value="Experimental ELF64 output support added and working" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>
