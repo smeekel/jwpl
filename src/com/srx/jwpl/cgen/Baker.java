@@ -95,7 +95,7 @@ public class Baker
 
     for( OP op : dst )
     {
-      if( op.op==EOP.B || op.op==EOP.BF || op.op==EOP.XENTER )
+      if( op.op==EOP.B || op.op==EOP.BF || op.op==EOP.XENTER || op.op==EOP.GOSUB )
       {
         int start = dst.indexOf(op);
         int end   = dst.indexOf(op.aux);

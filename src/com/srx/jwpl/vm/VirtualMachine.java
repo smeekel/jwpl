@@ -97,6 +97,8 @@ public class VirtualMachine
         case XLEAVE   -> opXLEAVE(op);
         case XGET     -> opXGET(op);
         case XTHROW   -> opXTHROW(op);
+        case GOSUB    -> opGOSUB(op);
+        case GORET    -> opGORET(op);
         default -> throw new RuntimeException(String.format("Missing opcode support: %s", op.op.mnemonic));
       }
 
@@ -106,10 +108,24 @@ public class VirtualMachine
 
   }
 
+  private void opGORET(OP op)
+  {
+    CallState cstate = callStack.getFirst();
+    cstate.ip = cstate.subs.pop();
+  }
+
+  private void opGOSUB(OP op)
+  {
+    CallState cstate = callStack.getFirst();
+    cstate.subs.push(cstate.ip);
+    cstate.ip += op.a;
+  }
+
   private void opXTHROW(OP op)
   {
     this.exception = stack.get(0);
     stack.pop();
+
 
     //
     // Start stack unwind

@@ -199,6 +199,7 @@ public class DefTreePrinter
         case B:
         case BF:
         case XENTER:
+        case GOSUB:
           sb.append(String.format(
             "%s%s l%d\n",
             indent,

@@ -28,6 +28,9 @@ public enum EOP
   XLEAVE    (0x18, "xleave"),
   XTHROW    (0x19, "xthrow"),
   XGET      (0x1A, "xget"),
+  NEW       (0x1B, "new"),
+  GOSUB     (0x1C, "gosub"),
+  GORET     (0x1D, "goret")
   ;
 
   public final int    id;

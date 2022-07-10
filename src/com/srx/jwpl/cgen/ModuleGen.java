@@ -8,6 +8,9 @@ import org.antlr.v4.runtime.tree.ParseTree;
 
 public class ModuleGen extends BaseGenerator<Object>
 {
+  public OP finallyLabel;
+
+
   public ModuleGen(Scope defTree)
   {
     this.defTree = defTree;
@@ -213,25 +216,69 @@ public class ModuleGen extends BaseGenerator<Object>
   @Override
   public Object visitTryStatement(WPLParser.TryStatementContext ctx)
   {
+    final boolean withFinnaly = ctx.finallyElement() != null;
     OP labelCatch   = genLabel();
     OP labelExit    = genLabel();
+    OP oldFinnaly   = finallyLabel;
 
-    emit(EOP.XENTER).setAux(labelCatch);
+
+    if( !withFinnaly )
+    {
+      finallyLabel = null;
+      emit(EOP.XENTER).setAux(labelCatch);
       //
       // Try Body
       //
       visit(ctx.getChild(1));
       //
-    emit(EOP.XLEAVE);
+      emit(EOP.XLEAVE);
 
-    emit(EOP.B).setAux( labelExit );
-    emit(labelCatch);
+      emit(EOP.B).setAux(labelExit);
+      emit(labelCatch);
       //
       // Catch body
       //
       visit(ctx.getChild(2));
       //
-    emit(labelExit);
+      emit(labelExit);
+      finallyLabel = oldFinnaly;
+    }
+    else
+    {
+      finallyLabel = genLabel();
+
+      emit(EOP.XENTER).setAux(labelCatch);
+      //
+      // Try Body
+      //
+      visit(ctx.getChild(1));
+      //
+      emit(EOP.XLEAVE);
+      emit(EOP.GOSUB).setAux( finallyLabel );
+      emit(EOP.B).setAux( labelExit );
+
+
+      emit(labelCatch);
+      //
+      // Catch body
+      //
+      visit(ctx.getChild(2));
+      emit(EOP.GOSUB).setAux( finallyLabel );
+      emit(EOP.B).setAux( labelExit );
+      //
+
+
+      emit(finallyLabel);
+      finallyLabel = oldFinnaly;
+      //
+      // Finally body
+      //
+      visit(ctx.getChild(3));
+      //
+      emit(EOP.GORET);
+
+      emit(labelExit);
+    }
 
     return null;
   }
@@ -256,6 +303,10 @@ public class ModuleGen extends BaseGenerator<Object>
   public Object visitThrowStatement(WPLParser.ThrowStatementContext ctx)
   {
     super.visitThrowStatement(ctx);
+
+    if( finallyLabel!=null )
+      emit(EOP.GOSUB).setAux( finallyLabel );
+
     emit(EOP.XTHROW);
 
     return null;

@@ -11,8 +11,8 @@ public class Main
 {
   public static void main(String[] args)
   {
-    //compile();
-    eflTest();
+    compile();
+    //eflTest();
   }
 
   private static void eflTest()

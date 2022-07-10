@@ -31,7 +31,7 @@ fn outter()
 }
 
 
-
+/*
 var aa = "none";
 
 if aa
@@ -42,8 +42,9 @@ else
 {
   print("> cond is false");
 }
+*/
 
-
+print("> start");
 try
 {
   print("do stuff");
@@ -51,6 +52,12 @@ try
 }
 catch e
 {
-  print("Got exception", e);
-  //throw e;
+  print("Got exception:", e);
+  throw e;
 }
+finally
+{
+  print("finally");
+}
+
+print("> end");

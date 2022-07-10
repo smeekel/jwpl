@@ -12,12 +12,13 @@ class CallState
   public int    cvals;
   public int    rvals;
 
-  public Deque<EHandler> ehandlers;
-
+  public Deque<EHandler>  ehandlers;
+  public Deque<Integer>   subs;
 
   public CallState()
   {
-    this.ehandlers = new LinkedList<>();
+    this.ehandlers  = new LinkedList<>();
+    this.subs       = new LinkedList<>();
   }
 
   public static class EHandler

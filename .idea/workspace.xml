@@ -2,24 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1330452c-7768-48f0-ac20-c1919f877e45" name="Changes" comment="Experimental ELF64 output support added and working">
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_progbits.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/WPLELF.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Module.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jwpl.iml" beforeDir="false" afterPath="$PROJECT_DIR$/jwpl.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Baker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Baker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Compiler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Compiler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/DefTreePrinter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/DefTreePrinter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ELF.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/ELF64.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_note.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_note.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_null.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_null.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_strtab.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT_strtab.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/elf/Section64.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/elf/SHT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/CallState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/CallState.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/VirtualMachine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/VirtualMachine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EVarFlags.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EVarFlags.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Flask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/Flask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EOP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EOP.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/input.wpl" beforeDir="false" afterPath="$PROJECT_DIR$/test/input.wpl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +29,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="dev-elf" />
+        <entry key="$PROJECT_DIR$" value="2-elf-output-support" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -47,7 +38,7 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectId" id="2B5AD2TSmUfbvbS7xgSI52IOLfy" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -216,7 +207,14 @@
       <option name="project" value="LOCAL" />
       <updated>1657157239755</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Experimental ELF64 output support added and working">
+      <created>1657177649705</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1657177649705</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
