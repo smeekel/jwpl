@@ -1,0 +1,9 @@
+var Lexer = import("file://./lexer.wpl");
+
+
+var lexer = new Lexer("../input.wpl");
+var token;
+
+
+token = lexer.lex();
+print( token );

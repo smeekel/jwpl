@@ -145,6 +145,7 @@ expression
   | expression '.' IDENT                              # MemberAccessExpr
   | expression '?.' IDENT                             # SafeMemberAccessExpr
   | expression callArguments                          # CallExpr
+  | NEW expression callArguments                      # NewExpr
   | expression '++'                                   # PostIncrementExpr
   | expression '--'                                   # PostDecrementExpr
   | '++' expression                                   # PreIncrementExpr
@@ -245,7 +246,6 @@ FOR           : 'for';
 FN            : 'fn';
 FROM          : 'from';
 IF            : 'if';
-IMPORT        : 'import';
 EXPORT        : 'export';
 RETURN        : 'return';
 SWITCH        : 'switch';
@@ -258,6 +258,7 @@ PUBLIC        : 'public';
 PRIVATE       : 'private';
 PROTECTED     : 'protected';
 NONE          : 'none';
+NEW           : 'new';
 SUPER         : 'super';
 AS            : 'as';
 STATIC        : 'static';

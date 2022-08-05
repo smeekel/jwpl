@@ -137,6 +137,7 @@ public class DefTreePrinter
         case PUSH:
         case PUSHTHIS:
         case RET:
+        case NEW:
           sb.append(String.format(
             "%s%s %d\n",
             indent,

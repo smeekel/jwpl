@@ -1,0 +1,18 @@
+
+fn outter(p0)
+{
+  var v0 = p0;
+
+  fn inner()
+  {
+    print("inner", v0);
+    return v0;
+  }
+
+  return new inner();
+}
+
+var test = outter(55);
+outter(22);
+
+print(test());

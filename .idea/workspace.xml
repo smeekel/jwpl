@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1330452c-7768-48f0-ac20-c1919f877e45" name="Changes" comment="Experimental ELF64 output support added and working">
+    <list default="true" id="1330452c-7768-48f0-ac20-c1919f877e45" name="Changes" comment="Added sub branch and link support and finally support to try-catch blocks">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/WPL.g4" beforeDir="false" afterPath="$PROJECT_DIR$/src/WPL.g4" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Baker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/Baker.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/DefTreePrinter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/DefTreePrinter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/cgen/ModuleGen.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/CallState.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/CallState.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/VirtualMachine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/VirtualMachine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EOP.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/srx/jwpl/vm/module/EOP.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/input.wpl" beforeDir="false" afterPath="$PROJECT_DIR$/test/input.wpl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,8 +57,8 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "last_directory_selection": "C:/dev/jwpl/src",
-    "last_opened_file_path": "C:/dev/jwpl/test/input.wpl",
-    "project.structure.last.edited": "Libraries",
+    "last_opened_file_path": "C:/dev/jwpl/test/wplc/main.wpl",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "preferences.sourceCode.Java"
@@ -85,7 +83,7 @@
       <recent name="com.srx.jwpl.vm" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.com.srx.jwpl.Main">
+  <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.srx.jwpl.Main" />
       <module name="jwpl" />
@@ -100,13 +98,8 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <list>
-      <item itemvalue="Application.com.srx.jwpl.Main" />
-      <item itemvalue="Application.Main" />
-    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.com.srx.jwpl.Main" />
         <item itemvalue="Application.Main" />
         <item itemvalue="Application.Main" />
         <item itemvalue="Application.Main" />
@@ -214,7 +207,14 @@
       <option name="project" value="LOCAL" />
       <updated>1657177649705</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Added sub branch and link support and finally support to try-catch blocks">
+      <created>1657413428955</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1657413428956</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -254,7 +254,8 @@
     <MESSAGE value="Added experimental vm nested call functionality, added object to string callback support (in vm), added nested variable scoping (experimental), added ph1 exception support" />
     <MESSAGE value="Basic ELF64 writing support added (validated against readelf)" />
     <MESSAGE value="Experimental ELF64 output support added and working" />
-    <option name="LAST_COMMIT_MESSAGE" value="Experimental ELF64 output support added and working" />
+    <MESSAGE value="Added sub branch and link support and finally support to try-catch blocks" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added sub branch and link support and finally support to try-catch blocks" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>

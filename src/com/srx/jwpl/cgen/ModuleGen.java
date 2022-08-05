@@ -6,6 +6,7 @@ import com.srx.jwpl.vm.module.EVarFlags;
 import com.srx.jwpl.vm.module.OP;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+// TODO access to non-existing members should throw an exception (?)
 public class ModuleGen extends BaseGenerator<Object>
 {
   public OP finallyLabel;
@@ -308,6 +309,20 @@ public class ModuleGen extends BaseGenerator<Object>
       emit(EOP.GOSUB).setAux( finallyLabel );
 
     emit(EOP.XTHROW);
+
+    return null;
+  }
+
+  @Override
+  public Object visitNewExpr(WPLParser.NewExprContext ctx)
+  {
+    int count = 0;
+
+    if( ctx.callArguments().argumentList()!=null )
+      count = ctx.callArguments().argumentList().expr.size();
+
+    super.visitNewExpr(ctx);
+    emit(EOP.NEW, count);
 
     return null;
   }

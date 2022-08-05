@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Vector;
 
+// TODO add uncaught internal exception
 public class VirtualMachine
 {
   protected Vector<Module>        modules;
@@ -99,6 +100,7 @@ public class VirtualMachine
         case XTHROW   -> opXTHROW(op);
         case GOSUB    -> opGOSUB(op);
         case GORET    -> opGORET(op);
+        case NEW      -> opNEW(op);
         default -> throw new RuntimeException(String.format("Missing opcode support: %s", op.op.mnemonic));
       }
 
@@ -106,6 +108,10 @@ public class VirtualMachine
         cstate = callStack.getFirst();
     }
 
+  }
+
+  private void opNEW(OP op)
+  {
   }
 
   private void opGORET(OP op)
@@ -129,7 +135,6 @@ public class VirtualMachine
 
     //
     // Start stack unwind
-    // TODO This does not need to loop. A single step should be sufficient
     //
     Iterator<CallState>           cstateIter = callStack.iterator();
     Iterator<CallState.EHandler>  handlerIter;
@@ -341,7 +346,12 @@ public class VirtualMachine
     CallState nextCstate;
 
     varToCall = stack.get(op.a);
+
+    //
+    // TODO change to WPL exception and throw internally
+    //
     assert varToCall.type == EVariableTypes.FLASK ;
+
     toCall = (Flask)varToCall.value;
 
     if( toCall.external == null )

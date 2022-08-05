@@ -1,0 +1,16 @@
+
+var testValue;
+
+
+fn __new(filename)
+{
+  this.testValue = filename;
+  print("Lexer: construct", filename);
+}
+
+fn lex()
+{
+  print("Lexer: lex", testValue);
+  return 0;
+}
+
